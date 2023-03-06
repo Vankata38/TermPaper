@@ -1,16 +1,17 @@
 ﻿namespace TermPaper;
-class Program
+
+static class Program
 {
-    static string parseCommand(string input)
+    static string ParseCommand(string input)
     {
         string command = "";
-        for (int i = 0; i < input.Length; i++)
+        foreach (char c in input)
         {
-            if (input[i] == ' ')
+            if (c == ' ')
             {
                 break;
             }
-            command += input[i];
+            command += c;
         }
         
         command = Helper.ToUpperCase(command);
@@ -23,8 +24,8 @@ class Program
         {
             Console.WriteLine("Enter command: ");
             
-            string input = Console.ReadLine();
-            string command = parseCommand(input);
+            string input = Console.ReadLine()!;
+            string command = ParseCommand(input);
             string parameters = Helper.Substring(input, command.Length + 1);
 
             switch (command)
