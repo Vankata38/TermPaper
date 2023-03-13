@@ -1,34 +1,103 @@
+using TermPaper.Data_Structures;
 namespace TermPaper;
 
 public class Helper
 {
-    public static string ToUpperCase(string input)
+    
+    public static string[] SplitLine(string input, char separator)
     {
-        string upperCase = "";
-        
-        for (int i = 0; i < input.Length; i++)
+        int count = 0;
+        foreach (char c in input)
         {
-            if (input[i] >= 'a' && input[i] <= 'z')
-                upperCase += (char)(input[i] - 32);
+            if (c == separator)
+            {
+                count++;
+            }
+        }
+        
+        string[] result = new string[count + 1];
+        int index = 0;
+        string temp = "";
+        foreach (char c in input)
+        {
+            if (c == separator)
+            {
+                result[index] = temp;
+                temp = "";
+                index++;
+            }
             else
-                upperCase += input[i];
+            {
+                temp += c;
+            }
         }
 
-        return upperCase;
+        return result;
     }
     
-    public static string Substring(string str, int start, int lenght = -1)
+    // TODO - Create a function to check if the input is valid.
+    public static bool IsValidInput(string input)
     {
-        string subString = "";
+        // TODO - Use a Queue to check if the syntax is correct.
+        // Example input: func1(a, b): "a & b"
+        // Example input: func2(a, b, c): "func1(a, b) | c"
+        Queue funcKeywordValidation = new Queue("func");
         
-        if (lenght == -1)
-            lenght = str.Length - start;
-        
-        for (int i = start; i < start + lenght; i++)
+        // Make sure the function keyword is valid.
+        for (int i = 0; i < 4; i++)
         {
-            subString += str[i];
+            if (funcKeywordValidation.Dequeue()!.Key != input[i])
+                return false;
         }
         
-        return subString;
+        int countBrackets = 0;
+        bool instructionPart = false;
+        Queue variableValidation = new Queue();
+        
+        for (int i = 4; i < input.Length; i++)
+        {
+            if (input[i] == '(')
+            {
+                countBrackets++;
+            }
+            else if (input[i] == ')')
+            {
+                countBrackets--;
+            }
+            else if (input[i] == '\"')
+            {
+                if (!instructionPart)
+                    instructionPart = true;
+                else
+                {
+                    if (countBrackets != 0)
+                        return false;
+                    if (variableValidation.IsEmpty)
+                        // If we got to the end and we dont have any variables left, then the input is valid.
+                        return true; 
+                }
+            }
+            else if (input[i] >= 'a' && input[i] <= 'z')
+            {
+                if (!instructionPart)
+                {
+                    variableValidation.Enqueue(input[i]);
+                }
+                else
+                {
+                    if (variableValidation.IsEmpty)
+                        return false;
+                    Console.WriteLine(variableValidation.Peek().Key);
+                    
+                    if (variableValidation.Peek().Key == input[i])
+                    {
+                        variableValidation.Dequeue();
+                        Console.WriteLine("Dequeued: " + input[i]);
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 }

@@ -1,4 +1,4 @@
-namespace TermPaper;
+namespace TermPaper.Data_Structures;
 
 public class HashMap
 {
@@ -20,8 +20,6 @@ public class HashMap
         }
     }
     
-    // Hashing fucntion, uses the format: funcX, where X is the number of the function for hash key.
-    // This hashing function can't have collisions.
     public static int Hash(string key)
     {
         int hashCode = 0;
