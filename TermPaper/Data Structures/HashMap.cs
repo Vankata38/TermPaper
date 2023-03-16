@@ -2,50 +2,105 @@ namespace TermPaper.Data_Structures;
 
 public class HashMap
 {
-    private const int MIN_CAPACITY = 16;
-    private Entry[] entries;
+    private const int MinCapacity = 19;
+    private readonly Entry[] _entries;
     
     // Entry class, used to store the name of the function, the tree, and the hash code.
-    private class Entry
+    public class Entry
     {
-        public string name;
-        public Tree tree;
-        public int hashCode;
+        public string Key;
+        public Tree Value;
+        public Entry? Next;
         
-        public Entry(string Name, Tree Value)
+        public Entry(string key, Tree Tree)
         {
-            this.name = Name;
-            this.tree = Value;
-            this.hashCode = Hash(name);
+            this.Key = key;
+            this.Value = Tree;
         }
     }
     
-    public static int Hash(string key)
+    public HashMap(int capacity = MinCapacity)
     {
-        int hashCode = 0;
-        for (int i = 0; i < key.Length & hashCode == 0; i++)
+        _entries = new Entry[capacity];
+    }
+    
+    private static int Hash(string key)
+    {
+        var hash = 0;
+        foreach (var c in key)
         {
-            if (key[i] == '(')
+            hash += ((hash << 5) + c) % MinCapacity;
+        }
+
+        return hash;
+    }
+
+    public Tree? Get(string key)
+    {
+        var hash = Hash(key);
+        var current = _entries[hash];
+        
+        while (current != null)
+        {
+            if (current.Key == key)
             {
-                char number = key[i - 1];
-                hashCode = number - '0';
+                return current.Value;
             }
+            current = current.Next;
         }
 
-        return hashCode;
+        return null;
     }
     
-    public HashMap(int capacity = MIN_CAPACITY)
+    public void Insert(string key, Tree value)
     {
-        entries = new Entry[capacity];
+        var index = Hash(key);
+        Entry? current = _entries[index];
+        
+        while (current != null)
+        {
+            if (current.Key == key)
+            {
+                current.Value = value;
+                return;
+            }
+            current = current.Next;
+        }
+        
+        var entry = new Entry(key, value);
+        if (_entries[index].Next == null)
+        {
+            _entries[index] = entry;
+        }
+        else
+        {
+            entry.Next = _entries[index];
+            _entries[index] = entry;
+        }
     }
 
-    // TODO - Create a function to add an entry to the hash table.
-    
-    // TODO - Create a function to get an entry from the hash table.
-    
-    // TODO - Create a function to remove an entry from the hash table.
-    
-    // TODO - Create a function to check if the hash table contains an entry.
-    
+    public void Remove(string key)
+    {
+        var hash = Hash(key);
+        var current = _entries[hash];
+        Entry? previous = null;
+        
+        while (current != null)
+        {
+            if (current.Key == key)
+            {
+                if (previous != null)
+                {
+                    previous.Next = current.Next;
+                }
+                else
+                {
+                    _entries[hash] = current.Next;
+                }
+            }
+
+            previous = current;
+            current = current.Next;
+        }
+    }
 }
