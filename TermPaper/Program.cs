@@ -8,15 +8,19 @@ static class Program
         while (true)
         {
             Console.WriteLine("Enter command: ");
-            
             string input = Console.ReadLine()!;
-            string[] parsedInput = Helper.SplitLine(input, ' ');
-            string body = parsedInput[1] + parsedInput[2];
-            
-            switch (parsedInput[0])
+            string command = Helper.Split(input, ' ')[0];
+
+            switch (command)
             {
                 case "DEFINE":
-                    Console.WriteLine("Syntax is {0}", Helper.IsValidInput(body));
+                    Helper.HandleInput(input, out string funcName, out string funcArgs, out string funcDef);
+
+                    // Check validity of function name
+                    Helper.IsValidInput(funcArgs, funcDef);
+                    
+                    // Build the tree
+                    
                     break;
                 case "SOLVE":
                     Console.WriteLine("SOLVE");
