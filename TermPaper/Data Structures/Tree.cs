@@ -1,4 +1,4 @@
-namespace TermPaper;
+namespace TermPaper.Data_Structures;
 
 public class Tree
 {
@@ -17,9 +17,9 @@ public class Tree
     }
     
     // Root node of the tree. Set to readonly so it can't be changed.
-    public readonly Node Root;
+    private readonly Node _root;
     public Tree(Node root)
     {
-        this.Root = root;
+        this._root = root;
     }
 }

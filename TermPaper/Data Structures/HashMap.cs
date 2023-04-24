@@ -12,13 +12,14 @@ public class HashMap
         public Tree Value;
         public Entry? Next;
         
-        public Entry(string key, Tree Tree)
+        public Entry(string key, Tree tree)
         {
             this.Key = key;
-            this.Value = Tree;
+            this.Value = tree;
         }
     }
     
+    // TODO: - Use getter and setter and private fields.
     public HashMap(int capacity = MinCapacity)
     {
         _entries = new Entry[capacity];
