@@ -9,16 +9,17 @@ static class Program
         {
             Console.WriteLine("Enter command: ");
             string input = Console.ReadLine()!;
-            string command = Helper.Split(input, ' ')[0];
+            string command = Helper.SplitOne(input, ' ');
 
             switch (command)
             {
                 case "DEFINE":
-                    Helper.HandleInput(input, out string funcName, out string funcArgs, out string funcDef);
 
-                    // Check validity of function name
-                    Helper.IsValidInput(funcArgs, funcDef);
                     
+                    
+                    // Check validity of function name
+                    Console.WriteLine(Helper.IsValidInput(input));
+
                     // Build the tree
                     
                     break;
