@@ -14,17 +14,16 @@ static class Program
             switch (command)
             {
                 case "DEFINE":
-
                     
-                    
-                    // Check validity of function name
-                    Console.WriteLine(Helper.IsValidInput(input));
+                    // TODO - Remove debug check validity of function name
+                    Console.WriteLine(Validator.IsValidInput(input, 'd'));
 
                     // Build the tree
                     
                     break;
                 case "SOLVE":
-                    Console.WriteLine("SOLVE");
+                    Console.WriteLine(Validator.IsValidInput(input, 's'));
+                    
                     break;
                 case "ALL":
                     Console.WriteLine("ALL");
