@@ -19,7 +19,6 @@ public class HashMap
         }
     }
     
-    // TODO: - Use getter and setter and private fields.
     public HashMap(int capacity = MinCapacity)
     {
         _entries = new Entry[capacity];

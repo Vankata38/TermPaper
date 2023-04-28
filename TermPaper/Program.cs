@@ -1,10 +1,16 @@
-﻿namespace TermPaper;
+﻿using TermPaper.Data_Structures;
+using TermPaper.FunctionHandler;
+
+namespace TermPaper;
 
 static class Program
 {
     
     static void Main(string[] args)
     {
+        // Test the hashmap
+        var tree = new Data_Structures.Tree(new Tree.TreeNode('c'));
+        
         while (true)
         {
             Console.WriteLine("Enter command: ");
@@ -16,13 +22,17 @@ static class Program
                 case "DEFINE":
                     
                     // TODO - Remove debug check validity of function name
-                    Console.WriteLine(Validator.IsValidInput(input, 'd'));
+                    Console.WriteLine(Validator.IsValidInput(input, 'd',  out string exp));
 
+                    // TODO Use the tree
                     // Build the tree
+                    if (!Define.IsPostfix(exp))
+                        Define.ConvertToPostfix();
+                    Define.BuildTree(exp);
                     
                     break;
                 case "SOLVE":
-                    Console.WriteLine(Validator.IsValidInput(input, 's'));
+                    Console.WriteLine(Validator.IsValidInput(input, 's',  out exp));
                     
                     break;
                 case "ALL":

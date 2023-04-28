@@ -2,23 +2,20 @@ namespace TermPaper.Data_Structures;
 
 public class Tree
 {
-    // Node class, used to store the value of the node and the left and right children.
-    public class Node
+    public class TreeNode
     {
-        private readonly char _value;
-        public Node? Left = null;
-        public Node? Right = null;
+        public char Value;
+        public TreeNode? Left = null;
+        public TreeNode? Right = null;
         
-    // Constructor for the Node class.
-    public Node(char value)
+    public TreeNode(char value)
         {
-            this._value = value;
+            this.Value = value;
         }
     }
     
-    // Root node of the tree. Set to readonly so it can't be changed.
-    private readonly Node _root;
-    public Tree(Node root)
+    private readonly TreeNode _root;
+    public Tree(TreeNode root)
     {
         this._root = root;
     }
