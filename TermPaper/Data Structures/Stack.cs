@@ -8,11 +8,11 @@ public class Stack
         public Node? Next;
     }
 
-    private Node _top;
+    private static Node _top;
 
     public Stack()
     {
-        this._top = null;
+        Stack._top = null;
     }
     
     public void Push(Tree.TreeNode value)
@@ -31,5 +31,23 @@ public class Stack
         Tree.TreeNode value = _top.Value;
         _top = _top.Next;
         return value;
+    }
+    
+    public Tree.TreeNode Peek()
+    {
+        return _top.Value;
+    }
+    
+    public int Count()
+    {
+        int count = 0;
+        Node? current = _top;
+        while (current != null)
+        {
+            count++;
+            current = current.Next;
+        }
+
+        return count;
     }
 }

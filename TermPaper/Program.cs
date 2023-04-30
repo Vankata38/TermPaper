@@ -1,6 +1,4 @@
 ﻿using TermPaper.Data_Structures;
-using TermPaper.FunctionHandler;
-
 namespace TermPaper;
 
 static class Program
@@ -8,9 +6,6 @@ static class Program
     
     static void Main(string[] args)
     {
-        // Test the hashmap
-        var tree = new Data_Structures.Tree(new Tree.TreeNode('c'));
-        
         while (true)
         {
             Console.WriteLine("Enter command: ");
@@ -23,12 +18,20 @@ static class Program
                     
                     // TODO - Remove debug check validity of function name
                     Console.WriteLine(Validator.IsValidInput(input, 'd',  out string exp));
+                    
+                    // Handle notation
+                    Tree functionTree = new Tree();
+                    if (!Validator.IsPostfix(exp))
+                        exp = Helper.ConvertToPostfix(exp);
+                    else
+                        exp = Helper.RemoveChar(exp, ' ');
 
-                    // TODO Use the tree
+                    // TODO - Remove debug
+                    Console.WriteLine(exp);
+                    
                     // Build the tree
-                    if (!Define.IsPostfix(exp))
-                        Define.ConvertToPostfix();
-                    Define.BuildTree(exp);
+                    functionTree.BuildTree(exp);
+                    functionTree.PrintTree();
                     
                     break;
                 case "SOLVE":

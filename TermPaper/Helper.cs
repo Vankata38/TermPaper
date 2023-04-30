@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+using TermPaper.Data_Structures;
 namespace TermPaper;
 
 public static class Helper
@@ -23,6 +25,18 @@ public static class Helper
         return result;
     }
 
+    public static string RemoveChar(string input, char c)
+    {
+        string result = "";
+        foreach (char ch in input)
+        {
+            if (ch != c)
+                result += ch;
+        }
+
+        return result;
+    }
+    
     // TODO: Make this function have limit, so we can eliminate SplitOne
     public static string[] Split(string input, char separator)
     {
@@ -84,9 +98,82 @@ public static class Helper
 
         return false;
     }
+
+    public static string RemoveAt(string input, int index)
+    {
+        string result = "";
+        for (int i = 0; i < input.Length; i++)
+        {
+            if (i != index)
+                result += input[i];
+        }
+
+        return result;
+    }
     
     public static bool IsLetter(char c)
     {
         return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z';
+    }
+    
+    public static bool IsNumber(char c)
+    {
+        return c >= '0' && c <= '9';
+    }
+
+    private static int Precedense(char c)
+    {
+        switch (c)
+        {
+            case '&':
+                return 2;
+            case '|':
+                return 1;
+            default:
+                return 0;
+        }
+    }
+    
+    // TODO Write postfix converter
+    public static string ConvertToPostfix(string expression)
+    {
+        string postfix = "";
+        Stack stack = new Stack();
+
+        for (int i = 0; i < expression.Length; i++)
+        {
+            char c = expression[i];
+
+            if (IsNumber(c) || IsLetter(c) || c == '!')
+            {
+                postfix += c;
+            } else if (c == '&' || c == '|')
+            {
+                while (stack.Count() > 0 && Precedense(stack.Peek().Value) >= Precedense(c))
+                {
+                    postfix += stack.Pop().Value;
+                }
+                stack.Push(new Tree.TreeNode(c));
+            } else if (c == '(')
+            {
+                stack.Push(new Tree.TreeNode(c));
+            } else if (c == ')')
+            {
+                while (stack.Count() > 0 && stack.Peek().Value != '(')
+                {
+                    postfix += stack.Pop().Value;
+                }
+                stack.Pop();
+            }
+
+            Console.WriteLine("Postfix: " + postfix);
+        }
+
+        while (stack.Count() > 0)
+        {
+            postfix += stack.Pop().Value;
+        }
+        
+        return postfix;
     }
 }

@@ -117,11 +117,9 @@ public class Validator
         return bracketsCount == 0;
     }
     
+    // TODO Fix postfix validation
     private static bool IsValidExpression(string exp, string[] variables)
     {
-        // Our expression mustn't have variables that arent in the arguments
-        // Our expression must only have operations: &, |, ! and priority brackets: (, )
-
         bool inVariable = false;
         string variable = "";
         foreach (char c in exp)
@@ -160,5 +158,28 @@ public class Validator
         }
 
         return true;
+    }
+    
+    public static bool IsPostfix(string expression)
+    {
+        // We need to handle funcX(a, b) having a ' ' after the comma
+        for (int i = 0; i < expression.Length - 1; i++)
+        {
+            if (expression[i] == ',')
+            {
+                expression = Helper.RemoveAt(expression, i);
+                expression = Helper.RemoveAt(expression, i);
+            }
+        }
+        
+        // If the expression is postfix, we will have 2 operands before an operator
+        string[] tokens = Helper.Split(expression, ' ');
+
+        // Means we have two variables and an operator
+        if (tokens[0] != "&" && tokens[0] != "|" &&
+            tokens[1] != "&" && tokens[1] != "|")
+            return true;
+
+        return false;
     }
 }
