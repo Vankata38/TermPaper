@@ -22,6 +22,8 @@ public class Validator
         exp = exp + " ";
 
         // TODO: Remove debug statements
+        Console.WriteLine("DEBUG: ");
+        Console.WriteLine($"Input: {input}");
         Console.WriteLine($"\nName: {name}");
         Console.WriteLine($"Args: {args}");
         Console.WriteLine($"Def: {exp}\n");

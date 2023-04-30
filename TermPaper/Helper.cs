@@ -122,7 +122,6 @@ public static class Helper
         }
     }
     
-    // TODO Write postfix converter
     public static string ConvertToPostfix(string expression)
     {
         string postfix = "";
@@ -153,8 +152,6 @@ public static class Helper
                 }
                 stack.Pop();
             }
-
-            Console.WriteLine("Postfix: " + postfix);
         }
 
         while (stack.Count() > 0)
