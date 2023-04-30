@@ -22,11 +22,11 @@ public class Validator
         exp = exp + " ";
 
         // TODO: Remove debug statements
-        Console.WriteLine("DEBUG: ");
+        Console.WriteLine("\nDEBUG: ");
         Console.WriteLine($"Input: {input}");
-        Console.WriteLine($"\nName: {name}");
+        Console.WriteLine($"Name: {name}");
         Console.WriteLine($"Args: {args}");
-        Console.WriteLine($"Def: {exp}\n");
+        Console.WriteLine($"Def: {exp}");
 
         // Extract the arguments of the function and error if 0
         string[] vars = GetArguments(args, out bool valid, mode);
@@ -164,7 +164,7 @@ public class Validator
     
     public static bool IsPostfix(string expression)
     {
-        // We need to handle funcX(a, b) having a ' ' after the comma
+        // We need to handle funcX(a, b) having a ' ' after the "а,"
         for (int i = 0; i < expression.Length - 1; i++)
         {
             if (expression[i] == ',')
