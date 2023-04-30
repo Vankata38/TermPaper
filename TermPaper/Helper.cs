@@ -37,53 +37,41 @@ public static class Helper
         return result;
     }
     
-    // TODO: Make this function have limit, so we can eliminate SplitOne
-    public static string[] Split(string input, char separator)
+    public static string[] Split(string input, char separator, int limit = -1)
     {
         int count = 0;
-        foreach (char c in input)
+
+        if (limit == -1)
         {
-            if (c == separator)
+            foreach (char c in input)
             {
-                count++;
+                if (c == separator)
+                {
+                    count++;
+                }
             }
+        } else
+        {
+            count = limit - 1;
         }
+        
         
         string[] result = new string[count + 1];
         int index = 0;
         string temp = "";
-        foreach (char c in input)
+        for (int i = 0; i < input.Length && limit != 0; i++)
         {
-            if (c == separator)
+            if (input[i] == separator)
             {
                 result[index] = temp;
                 temp = "";
                 index++;
-            }
-            else
-            {
-                temp += c;
-            }
+                limit--;
+            } else
+                temp += input[i];
         }
-
-        result[index] = temp;
-        
-        return result;
-    }
-
-    public static string SplitOne(string input, char separator)
-    {
-        string result = "";
-        int i = 0;
-
-        while (input[i] != separator)
-        {
-            result += input[i];
-            i++;
-
-            if (i == input.Length)
-                return "";
-        }
+        if (temp != "")
+            result[index] = temp;
         
         return result;
     }

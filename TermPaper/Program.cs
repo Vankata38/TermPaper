@@ -10,7 +10,7 @@ static class Program
         {
             Console.WriteLine("Enter command: ");
             string input = Console.ReadLine()!;
-            string command = Helper.SplitOne(input, ' ');
+            string command = Helper.Split(input, ' ', 1)[0];
 
             switch (command)
             {
