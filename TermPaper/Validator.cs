@@ -3,12 +3,12 @@ namespace TermPaper;
 public class Validator
 {
     // TODO: Make this function take func format, so we can validate d, s, f separately
-    public static bool IsValidInput(string input, char mode, out string exp)
+    public static bool IsValidInput(string input, char mode, out string name, out string exp)
     {
         // TODO: We have to check the definition for functions that are already defined
         
         // Get the name, arguments and definition of the function
-        string name = Helper.Extract(' ', '(', input);
+        name = Helper.Extract(' ', '(', input);
         string args = Helper.Extract('(', ':', input);
         exp = Helper.Extract('"', '"', input);
         

@@ -3,11 +3,12 @@ namespace TermPaper;
 
 static class Program
 {
-    
     static void Main(string[] args)
     {
         while (true)
         {
+            Hashmap map = new Hashmap();
+
             Console.WriteLine("Enter command: ");
             string input = Console.ReadLine()!;
             string command = Helper.Split(input, ' ', 1)[0];
@@ -17,7 +18,7 @@ static class Program
                 case "DEFINE":
                     
                     // TODO - Remove debug check validity of function name
-                    Console.WriteLine(Validator.IsValidInput(input, 'd',  out string exp));
+                    Console.WriteLine(Validator.IsValidInput(input, 'd', out string funcName, out string exp));
                     
                     // Handle notation
                     Tree functionTree = new Tree();
@@ -32,10 +33,16 @@ static class Program
                     // Build the tree
                     functionTree.BuildTree(exp);
                     functionTree.PrintTree();
+
+                    // Save into the hashmap
+                    map.Add(funcName, functionTree);
+
+                    if (map.Get(funcName) != null)
+                        map.Get(funcName)?.PrintTree();
                     
                     break;
                 case "SOLVE":
-                    Console.WriteLine(Validator.IsValidInput(input, 's',  out exp));
+                    Console.WriteLine(Validator.IsValidInput(input, 's', out funcName, out exp));
                     
                     break;
                 case "ALL":

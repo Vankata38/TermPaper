@@ -1,106 +1,62 @@
 namespace TermPaper.Data_Structures;
 
-public class HashMap
+public class Hashmap
 {
-    private const int MinCapacity = 19;
-    private readonly Entry[] _entries;
-    
-    // Entry class, used to store the name of the function, the tree, and the hash code.
-    public class Entry
+    private class Entry
     {
-        public string Key;
-        public Tree Value;
-        public Entry? Next;
-        
-        public Entry(string key, Tree tree)
-        {
-            this.Key = key;
-            this.Value = tree;
+        public LinkedList Value;
+
+        public Entry()
+        { 
+            Value = new LinkedList();
         }
     }
+
+    private static int _size;
+    private readonly Entry[] _entries;
     
-    public HashMap(int capacity = MinCapacity)
+    public Hashmap(int size = 17)
     {
-        _entries = new Entry[capacity];
+        if (size < 17)
+            size = 17;
+        
+        _size = size;
+        _entries = new Entry[size];
     }
-    
+
     private static int Hash(string key)
     {
         var hash = 0;
         foreach (var c in key)
         {
-            hash += ((hash << 5) + c) % MinCapacity;
+            hash += ((hash << 5) + c);
         }
 
-        return hash;
+        return hash % _size;
     }
 
-    public Tree? Get(string key)
+    public Tree? Get(string funcName)
     {
-        var hash = Hash(key);
-        var current = _entries[hash];
+        // Get the KVP
+        var index = Hash(funcName);
+        var current = _entries[index];
         
-        while (current != null)
-        {
-            if (current.Key == key)
-            {
-                return current.Value;
-            }
-            current = current.Next;
-        }
+        // Get the list and search
+        var list = current.Value;
+        Tree tree = list.Get(funcName);
 
-        return null;
+        return tree;
     }
     
-    public void Insert(string key, Tree value)
+    public void Add(string funcName, Tree value)
     {
-        var index = Hash(key);
-        Entry? current = _entries[index];
+        int index = Hash(funcName);
+        if (_entries[index] == null)
+        {
+            _entries[index] = new Entry();
+        } 
         
-        while (current != null)
-        {
-            if (current.Key == key)
-            {
-                current.Value = value;
-                return;
-            }
-            current = current.Next;
-        }
-        
-        var entry = new Entry(key, value);
-        if (_entries[index].Next == null)
-        {
-            _entries[index] = entry;
-        }
-        else
-        {
-            entry.Next = _entries[index];
-            _entries[index] = entry;
-        }
-    }
-
-    public void Remove(string key)
-    {
-        var hash = Hash(key);
-        var current = _entries[hash];
-        Entry? previous = null;
-        
-        while (current != null)
-        {
-            if (current.Key == key)
-            {
-                if (previous != null)
-                {
-                    previous.Next = current.Next;
-                }
-                else
-                {
-                    _entries[hash] = current.Next;
-                }
-            }
-
-            previous = current;
-            current = current.Next;
-        }
+        LinkedList list = _entries[index].Value;
+        list.AddLast(funcName, value);
     }
 }
