@@ -16,9 +16,9 @@ public class LinkedList
         get { return _count; }
     }
 
-    public void AddFirst(string funcName, Tree value)
+    public void AddFirst(string funcName, int argumentsCount, Tree value)
     {
-        Node newNode = new Node(funcName, value);
+        Node newNode = new Node(funcName, argumentsCount, value);
 
         if (_head == null)
         {
@@ -33,9 +33,9 @@ public class LinkedList
         _count++;
     }
 
-    public void AddLast(string funcName, Tree value)
+    public void AddLast(string funcName, int argumentsCount, Tree value)
     {
-        Node newNode = new Node(funcName, value);
+        Node newNode = new Node(funcName, argumentsCount, value);
 
         if (_head == null)
         {
@@ -66,12 +66,13 @@ public class LinkedList
             {
                 return true;
             }
-            
+
             current = current.Next;
         }
+
         return false;
     }
-    
+
     public Tree? Get(string funcName)
     {
         Node? current = _head;
@@ -88,16 +89,34 @@ public class LinkedList
         return null;
     }
 
-    // TODO Implement param count
+    public int GetArgumentsCount(string funcName)
+    {
+        Node? current = _head;
+
+        while (current != null)
+        {
+            if (current.Key == funcName)
+            {
+                return current.ArgumentCount ?? 0;
+            }
+            
+            current = current.Next;
+        }
+
+        return 0;
+    }
+    
     public class Node
     {
         public readonly string? Key;
+        public int? ArgumentCount;
         public Tree? Value;
         public Node? Next;
 
-        public Node(string? funcName, Tree? value)
+        public Node(string? funcName, int? count, Tree? value)
         {
             Key = funcName;
+            ArgumentCount = count;
             Value = value;
             Next = null;
         }

@@ -18,31 +18,31 @@ static class Program
                 case "DEFINE":
                     
                     // TODO - Remove debug check validity of function name
-                    Console.WriteLine(Validator.IsValidInput(input, 'd', out string funcName, out string exp));
+                    Console.WriteLine(Validator.IsValidInput(input, 'd', out string funcName, out int argumentsCount, out string expression));
                     
                     // Handle notation
                     Tree functionTree = new Tree();
-                    if (!Validator.IsPostfix(exp))
-                        exp = Helper.ConvertToPostfix(exp);
+                    if (!Validator.IsPostfix(expression))
+                        expression = Helper.ConvertToPostfix(expression);
                     else
-                        exp = Helper.RemoveChar(exp, ' ');
+                        expression = Helper.RemoveChar(expression, ' ');
 
                     // TODO - Remove debug
-                    Console.WriteLine(exp);
+                    Console.WriteLine(expression);
                     
                     // Build the tree
-                    functionTree.BuildTree(exp);
+                    functionTree.BuildTree(expression);
                     functionTree.PrintTree();
 
                     // Save into the hashmap
-                    map.Add(funcName, functionTree);
+                    map.Add(funcName, argumentsCount, functionTree);
 
                     if (map.Get(funcName) != null)
                         map.Get(funcName)?.PrintTree();
                     
                     break;
                 case "SOLVE":
-                    Console.WriteLine(Validator.IsValidInput(input, 's', out funcName, out exp));
+                    Console.WriteLine(Validator.IsValidInput(input, 's', out funcName, out argumentsCount, out expression));
                     
                     break;
                 case "ALL":

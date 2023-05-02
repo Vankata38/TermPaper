@@ -48,7 +48,18 @@ public class Hashmap
         return tree;
     }
     
-    public void Add(string funcName, Tree value)
+    public int GetArgumentsCount(string funcName)
+    {
+        var index = Hash(funcName);
+        var current = _entries[index];
+        
+        var list = current.Value;
+        int argumentsCount = list.GetArgumentsCount(funcName);
+
+        return argumentsCount;
+    }
+    
+    public void Add(string funcName, int argumentsCount, Tree value)
     {
         int index = Hash(funcName);
         if (_entries[index] == null)
@@ -57,6 +68,6 @@ public class Hashmap
         } 
         
         LinkedList list = _entries[index].Value;
-        list.AddLast(funcName, value);
+        list.AddLast(funcName, argumentsCount, value);
     }
 }

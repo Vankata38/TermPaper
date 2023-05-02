@@ -3,33 +3,35 @@ namespace TermPaper;
 public class Validator
 {
     // TODO: Make this function take func format, so we can validate d, s, f separately
-    public static bool IsValidInput(string input, char mode, out string name, out string exp)
+    public static bool IsValidInput(string input, char mode, out string name, out int argumentsCount, out string expression)
     {
         // TODO: We have to check the definition for functions that are already defined
         
         // Get the name, arguments and definition of the function
         name = Helper.Extract(' ', '(', input);
         string args = Helper.Extract('(', ':', input);
-        exp = Helper.Extract('"', '"', input);
+        expression = Helper.Extract('"', '"', input);
+        argumentsCount = 0;
         
         // Handle empty input
-        if ((name == "" || args == "") || (mode == 'd' && exp == ""))
+        if ((name == "" || args == "") || (mode == 'd' && expression == ""))
             return false;
         
         // Remove the ')' in args and add ' ' to exp so the foreach can check the last character
         if (mode != 'f')
             args = args.Remove(args.Length - 1, 1);
-        exp = exp + " ";
+        expression += " ";
 
         // TODO: Remove debug statements
         Console.WriteLine("\nDEBUG: ");
         Console.WriteLine($"Input: {input}");
         Console.WriteLine($"Name: {name}");
         Console.WriteLine($"Args: {args}");
-        Console.WriteLine($"Def: {exp}");
+        Console.WriteLine($"Def: {expression}");
 
         // Extract the arguments of the function and error if 0
-        string[] vars = GetArguments(args, out bool valid, mode);
+        string[] arguments = GetArguments(args, out bool valid, mode);
+        argumentsCount = arguments.Length;
         if (!valid)
             return false;
 
@@ -38,7 +40,7 @@ public class Validator
             return false;
         
         // Validate the expression if in definition mode
-        if (!IsValidExpression(exp, vars))
+        if (!IsValidExpression(expression, arguments))
             return false;
         
         return true;
