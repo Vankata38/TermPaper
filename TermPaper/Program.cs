@@ -9,8 +9,12 @@ static class Program
         {
             Hashmap map = new Hashmap();
 
+            // TODO Trim the input so we dont have whitespaces
             Console.WriteLine("Enter command: ");
             string input = Console.ReadLine()!;
+
+            if (input[0] == ' ')
+                input = Helper.SubString(Helper.FindFirstChar(input), input); 
             string command = Helper.Split(input, ' ', 1)[0];
 
             switch (command)

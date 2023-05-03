@@ -24,6 +24,32 @@ public static class Helper
         return result;
     }
 
+    public static string SubString(int start, string input, int end = -1)
+    {
+        string result = "";
+        
+        if (end == -1)
+            end = input.Length;
+        
+        for (int i = start; i < end; i++)
+        {
+            result += input[i];
+        }
+
+        return result;
+    }
+    
+    public static int FindFirstChar(string input)
+    {
+        for (int i = 0; i < input.Length; i++)
+        {
+            if (input[i] != ' ')
+                return i;
+        }
+
+        return -1;
+    }
+
     public static string RemoveChar(string input, char c)
     {
         string result = "";
@@ -108,6 +134,11 @@ public static class Helper
         return c >= '0' && c <= '9';
     }
 
+    public static bool IsOperator(char c)
+    {
+        return c == '&' || c == '|' || c == '!' || c == '(' || c == ')';
+    }
+    
     private static int Precedense(char c)
     {
         switch (c)

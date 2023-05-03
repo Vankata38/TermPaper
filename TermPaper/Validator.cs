@@ -14,12 +14,18 @@ public class Validator
         argumentsCount = 0;
         
         // Handle empty input
+        // TODO Fix the bug Ivo told u
+        // Trim and use the commas to separate the arguments
         if ((name == "" || args == "") || (mode == 'd' && expression == ""))
             return false;
         
         // Remove the ')' in args and add ' ' to exp so the foreach can check the last character
         if (mode != 'f')
+        {
+            if (args[args.Length-1] != ')') 
+                return false;
             args = args.Remove(args.Length - 1, 1);
+        }
         expression += " ";
 
         // TODO: Remove debug statements
@@ -28,6 +34,8 @@ public class Validator
         Console.WriteLine($"Name: {name}");
         Console.WriteLine($"Args: {args}");
         Console.WriteLine($"Def: {expression}");
+
+        // TODO Check if the function name has spaces or commas
 
         // Extract the arguments of the function and error if 0
         string[] arguments = GetArguments(args, out bool valid, mode);
@@ -43,7 +51,8 @@ public class Validator
         if (!IsValidExpression(expression, arguments))
             return false;
         
-        return true;
+        // TODO handle the functions in the expression
+        return GetFunctions(expression, out string[] functions);
     }
 
     // Returns the arguments of the function
@@ -54,16 +63,17 @@ public class Validator
         string temp = "";
         valid = true;
         
+        // TODO Check only for valid operators
         foreach (char c in args)
         {
             if (c != ' ' && c != ',')
             {
                 // Check if the character is a valid 
-                if (!(c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') && !(c >= '0' && c <= '9'))
+                if (!(Helper.IsLetter(c)) && !(Helper.IsNumber(c)))
                     valid = false;
                 
                 // If we have a num outside of a variable, it's invalid
-                if (!inVariable && c >= '0' && c <= '9' && mode != 's')
+                if (!inVariable && Helper.IsNumber(c) && mode != 's')
                     valid = false;
                 
                 inVariable = true;
@@ -128,14 +138,14 @@ public class Validator
         string variable = "";
         foreach (char c in exp)
         {
-            if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || (c >= '0' && c <= '9'))
+            if (Helper.IsLetter(c) || Helper.IsNumber(c))
             {
-                if ((c >= '0' && c <= '9') && !inVariable)
+                if (Helper.IsNumber(c) && !inVariable)
                     return false;
                 
                 inVariable = true;
                 variable += c;
-            } else if (c == '&' || c == '|' || c == '!' || c == '(' || c == ')' || c == ' ' || c == ',')
+            } else if (Helper.IsOperator(c) || c == ' ' || c == ',')
             {
                 if (inVariable)
                 {
@@ -162,6 +172,17 @@ public class Validator
         }
 
         return true;
+    }
+
+    // TODO Find the functions and return them
+    public static bool GetFunctions(string expression, out string[] functionNames)
+    {
+        List<string> functions = new List<string>();
+        
+        
+        
+        functionNames = functions.ToArray();
+        return false;
     }
     
     public static bool IsPostfix(string expression)
