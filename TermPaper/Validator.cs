@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Diagnostics;
 using TermPaper.Data_Structures;
 namespace TermPaper;
 
@@ -7,8 +8,6 @@ public class Validator
     // TODO: Make this function take func format, so we can validate d, s, f separately
     public static bool IsValidInput(string input, char mode, Hashmap map, out string functionName, out int argumentsCount, out string expression)
     {
-        // TODO: We have to check the definition for functions that are already defined
-        
         // Get the name, arguments and definition of the function
         functionName = Helper.Extract(' ', '(', input);
         string args = Helper.Extract('(', ':', input);
@@ -50,19 +49,28 @@ public class Validator
         // Validate the expression if in definition mode
         if (!IsValidExpression(expression, arguments))
             return false;
-        
-        // TODO handle the functions in the expression
-        if (!GetFunctions(expression, out string[] funcNames, out int[] funcArgs, out valid))
-            return true;
-            
-        for(int i = 0; i < funcNames.Length; i++)
-        {
-            if (map.Contains(funcNames[i]) && funcArgs[i] == map.GetArgumentsCount(funcNames[i]))
+
+        if (!GetFunctions(expression, out string[] funcNames, out string[] funcArgs, out valid))
+            if (!IsPostfix(expression))
+            {
+                expression = Helper.ConvertToPostfix(expression);
                 return true;
-            else
+            }
+        
+        if (!valid)
+            return false;
+
+        for (int i = 0; i < funcNames.Length; i++)
+        {
+            var argsCount = GetArguments(funcArgs![i], out valid, 'd').Length;
+            if (!map.Contains(funcNames[i]) || (argsCount != map.GetArgumentsCount(funcNames[i])))
                 return false;
+            expression = ReplaceFunctions(expression, funcNames[i], funcArgs[i], map);
         }
 
+        // TODO Fix the postfix conversion for func5 in the right format
+        expression = Helper.ConvertToPostfix(expression);
+        
         return true;
     }
 
@@ -194,55 +202,54 @@ public class Validator
         return true;
     }
 
-    private static bool GetFunctions(string expression, out string[] functionNames, out int[] functionArgs, out bool valid)
+    private static bool GetFunctions(string expression, out string[] functionNames, out string[] functionArgs, out bool valid)
     {
         bool weHaveFunction = false;
-        bool inFunction = false;
+        bool inText = false;
         int count = 0;
-        for (int i = 0; i < expression.Length && !weHaveFunction; i++)
+        foreach (char c in expression)
         {
-            if (expression[i] == ',')
+            if (Helper.IsLetter(c) || Helper.IsNumber(c))
             {
-                if (!weHaveFunction)
-                    weHaveFunction = true;
-                
-                if (inFunction)
+                if (inText)
                     continue;
-
-                if (!inFunction)
-                {
-                    count++;
-                    inFunction = true;
-                }
-            } else if (expression[i] == ')' && inFunction)
+                
+                inText = true;
+            } else if (c == '(')
             {
-                inFunction = false;
+                if (!inText)
+                    continue;
+                
+                count++;
+                inText = false;
+                weHaveFunction = true;
+            } else if (c == ')' || c == ' ')
+            {
+                inText = false;
             }
         }
 
         if (!weHaveFunction)
         {
             functionNames = new string[0];
-            functionArgs = new int[0];
-            valid = false;
+            functionArgs = new string[0];
+            valid = true;
             return false;
         }
 
-        List<string> functionsName = new List<string>();
-        List<int> functionsArgs = new List<int>();
-        
-        functionNames = functionsName.ToArray();
-        functionArgs = functionsArgs.ToArray();
+        functionNames = new string[count];
+        functionArgs = new string[count];
 
         bool inName = false;
         bool possibleFunction = false;
-        
+
+        int index = 0;
         string funcArgs = "";
         string funcName = "";
         
         foreach (char c in expression)
         {
-            if (Helper.IsLetter(c) || Helper.IsNumber(c) || c == ',' || c == ' ')
+            if (Helper.IsLetter(c) || Helper.IsNumber(c) || c == ',')
             {
                 if (possibleFunction)
                 {
@@ -266,8 +273,12 @@ public class Validator
             {
                 if (possibleFunction)
                 {
-                    functionsName.Add(funcName);
-                    ((IList)functionArgs).Add(GetArguments(funcArgs, out valid, 'f').Length);
+                    functionNames[index] = funcName;
+                    functionArgs[index] = funcArgs;
+
+                    index++;
+                    funcName = "";
+                    funcArgs = "";
                 }
             } else if (c == '!' || c == '&' || c == '|')
             {
@@ -280,6 +291,26 @@ public class Validator
 
         valid = true;
         return true;
+    }
+    
+    private static string ReplaceFunctions(string expression, string funcNames, string funcArgs, Hashmap map)
+    {
+        var args = "";
+        for (int i = 0; i < funcArgs.Length; i++)
+        {
+            if (funcArgs[i] == ',')
+            {
+                args += ", ";
+                continue;
+            } 
+            args += funcArgs[i];
+        }
+        
+        var toReplace = funcNames + "(" + args + ")";
+        var replacement = map.TreeToPostfix(funcNames);
+        expression = Helper.Replace(expression, toReplace, replacement);
+
+        return expression;
     }
     
     public static bool IsPostfix(string expression)

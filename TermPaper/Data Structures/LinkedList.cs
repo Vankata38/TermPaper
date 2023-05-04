@@ -105,6 +105,17 @@ public class LinkedList
 
         return 0;
     }
+
+    public string TreeToPostfix(string funcName)
+    {
+        var tree = Get(funcName);
+        
+        if (tree == null)
+            return "";
+
+        var postfix = tree.TreeToPostfix();
+        return postfix;
+    }
     
     public class Node
     {

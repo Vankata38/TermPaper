@@ -12,7 +12,7 @@ public class Hashmap
         }
     }
 
-    private static int _size;
+    private readonly int _size;
     private readonly Entry[] _entries;
     
     public Hashmap(int size = 17)
@@ -24,12 +24,12 @@ public class Hashmap
         _entries = new Entry[size];
     }
 
-    private static int Hash(string key)
+    private int Hash(string key)
     {
         var hash = 0;
         foreach (var c in key)
         {
-            hash += ((hash << 5) + c);
+            hash += ((hash << 5) + c) % _size;
         }
 
         return hash % _size;
@@ -37,11 +37,9 @@ public class Hashmap
 
     public Tree? Get(string funcName)
     {
-        // Get the KVP
         var index = Hash(funcName);
         var current = _entries[index];
         
-        // Get the list and search
         var list = current.Value;
         Tree tree = list.Get(funcName);
 
@@ -80,5 +78,14 @@ public class Hashmap
         
         LinkedList list = _entries[index].Value;
         list.AddLast(funcName, argumentsCount, value);
+    }
+    
+    public string TreeToPostfix(string funcName)
+    {
+        int index = Hash(funcName);
+        LinkedList list = _entries[index].Value;
+        string postfix = list.TreeToPostfix(funcName);
+
+        return postfix;
     }
 }

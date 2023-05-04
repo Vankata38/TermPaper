@@ -3,15 +3,31 @@ namespace TermPaper;
 
 static class Program
 {
+    private static string[] inputs = new string[]
+    {
+        "DEFINE func1(a, b): \"a & b\"",
+        "DEFINE func2(a, b, c): \"func1(a, b) | c\"",
+        "DEFINE func3(a, b, c, d): \"a & (b | c) & !d\"",
+    };
+    
     static void Main(string[] args)
     {
+        Hashmap map = new Hashmap();
+        int testIndex = 0;
+        
         while (true)
         {
-            Hashmap map = new Hashmap();
-
-            // TODO Trim the input so we dont have whitespaces
-            Console.WriteLine("Enter command: ");
-            string input = Console.ReadLine()!;
+            string input;
+            if (testIndex < inputs.Length)
+            {
+                input = inputs[testIndex];
+                testIndex++;
+            }
+            else
+            {
+                Console.WriteLine("Enter command: ");
+                input = Console.ReadLine()!;
+            }
 
             if (input[0] == ' ')
                 input = Helper.SubString(Helper.FindFirstChar(input), input); 
@@ -28,24 +44,18 @@ static class Program
                         break;
                     
                     // Handle notation
-                    Tree functionTree = new Tree();
-                    if (!Validator.IsPostfix(expression))
-                        expression = Helper.ConvertToPostfix(expression);
-                    else
-                        expression = Helper.RemoveChar(expression, ' ');
+                    Tree newTree = new Tree();
 
                     // TODO - Remove debug
                     Console.WriteLine(expression);
                     
                     // Build the tree
-                    functionTree.BuildTree(expression);
-                    functionTree.PrintTree();
+                    newTree.BuildTree(expression);
+                    newTree.PrintTree();
 
                     // Save into the hashmap
-                    map.Add(funcName, argumentsCount, functionTree);
-
-                    if (map.Get(funcName) != null)
-                        map.Get(funcName)?.PrintTree();
+                    map.Add(funcName, argumentsCount, newTree);
+                    map.Get("func1")?.PrintTree();
                     
                     break;
                 case "SOLVE":

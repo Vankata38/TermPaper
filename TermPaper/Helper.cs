@@ -24,6 +24,51 @@ public static class Helper
         return result;
     }
 
+    public static int IndexOf(string input, string toFind)
+    {
+        for (int i = 0; i < input.Length; i++)
+        {
+            if (input[i] == toFind[0])
+            {
+                bool found = true;
+                for (int j = 1; j < toFind.Length; j++)
+                {
+                    if (input[i + j] != toFind[j])
+                    {
+                        found = false;
+                        break;
+                    }
+                }
+
+                if (found)
+                    return i;
+            }
+        }
+
+        return -1;
+    }
+    
+    public static string Replace(string input, string toReplace, string replacement)
+    {
+        string result = "";
+        int index = IndexOf(input, toReplace);
+        if (index == -1)
+            return input;
+        
+        for (int i = 0; i < input.Length; i++)
+        {
+            if (i == index)
+            {
+                result += replacement;
+                i += toReplace.Length - 1;
+            }
+            else
+                result += input[i];
+        }
+
+        return result;
+    }
+    
     public static string SubString(int start, string input, int end = -1)
     {
         string result = "";
