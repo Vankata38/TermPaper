@@ -22,7 +22,10 @@ static class Program
                 case "DEFINE":
                     
                     // TODO - Remove debug check validity of function name
-                    Console.WriteLine(Validator.IsValidInput(input, 'd', out string funcName, out int argumentsCount, out string expression));
+                    Console.WriteLine(Validator.IsValidInput(input, 'd', map, out string funcName, out int argumentsCount, out string expression));
+                    
+                    if (!Validator.IsValidInput(input, 'd', map, out funcName, out argumentsCount, out expression))
+                        break;
                     
                     // Handle notation
                     Tree functionTree = new Tree();
@@ -46,7 +49,7 @@ static class Program
                     
                     break;
                 case "SOLVE":
-                    Console.WriteLine(Validator.IsValidInput(input, 's', out funcName, out argumentsCount, out expression));
+                    Console.WriteLine(Validator.IsValidInput(input, 's', map, out funcName, out argumentsCount, out expression));
                     
                     break;
                 case "ALL":

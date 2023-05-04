@@ -47,6 +47,17 @@ public class Hashmap
 
         return tree;
     }
+
+    public bool Contains(string funcName)
+    {
+        int hash = Hash(funcName);
+        
+        if (_entries[hash] == null)
+            return false;
+        
+        LinkedList list = _entries[hash].Value;
+        return list.Contains(funcName);
+    }
     
     public int GetArgumentsCount(string funcName)
     {
