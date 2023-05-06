@@ -81,7 +81,7 @@ public class Tree
         return TreeToPostfix(_root);
     }
     
-    private string TreeToPostfix(TreeNode? root)
+    private static string TreeToPostfix(TreeNode? root)
     {
         if (root == null)
         {
@@ -94,13 +94,10 @@ public class Tree
             char current = root.Value;
 
             if (root.Value == '!')
-            {
                 return current + right;
-            }
             else
-            {
                 return left + right + current;
-            }
+            
         }
     }
 }

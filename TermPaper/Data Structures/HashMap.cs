@@ -4,7 +4,7 @@ public class Hashmap
 {
     private class Entry
     {
-        public LinkedList Value;
+        public readonly LinkedList Value;
 
         public Entry()
         { 
@@ -41,7 +41,7 @@ public class Hashmap
         var current = _entries[index];
         
         var list = current.Value;
-        Tree tree = list.Get(funcName);
+        Tree? tree = list.Get(funcName);
 
         return tree;
     }
@@ -49,7 +49,6 @@ public class Hashmap
     public bool Contains(string funcName)
     {
         int hash = Hash(funcName);
-        
         if (_entries[hash] == null)
             return false;
         
@@ -68,24 +67,22 @@ public class Hashmap
         return argumentsCount;
     }
     
-    public void Add(string funcName, int argumentsCount, Tree value)
+    public void Add(string funcName, string[]? arguments, Tree value)
     {
         int index = Hash(funcName);
         if (_entries[index] == null)
-        {
             _entries[index] = new Entry();
-        } 
-        
+
         LinkedList list = _entries[index].Value;
-        list.AddLast(funcName, argumentsCount, value);
+        list.AddLast(funcName, arguments, value);
     }
     
     public string TreeToPostfix(string funcName)
     {
         int index = Hash(funcName);
         LinkedList list = _entries[index].Value;
+        
         string postfix = list.TreeToPostfix(funcName);
-
         return postfix;
     }
 }

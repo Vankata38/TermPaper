@@ -3,24 +3,25 @@ namespace TermPaper;
 
 static class Program
 {
-    private static string[] inputs = new string[]
+    private static readonly string[] TestInputs =
     {
         "DEFINE func1(a, b): \"a & b\"",
         "DEFINE func2(a, b, c): \"func1(a, b) | c\"",
         "DEFINE func3(a, b, c, d): \"a & (b | c) & !d\"",
+        "DEFINE func5(a, b, c, d): \"func1(a, b) & func2(a, b, c) & func3(a, b, c, d)\""
     };
     
     static void Main(string[] args)
     {
         Hashmap map = new Hashmap();
         int testIndex = 0;
-        
+
         while (true)
         {
             string input;
-            if (testIndex < inputs.Length)
+            if (testIndex < TestInputs.Length)
             {
-                input = inputs[testIndex];
+                input = TestInputs[testIndex];
                 testIndex++;
             }
             else
@@ -38,27 +39,25 @@ static class Program
                 case "DEFINE":
                     
                     // TODO - Remove debug check validity of function name
-                    Console.WriteLine(Validator.IsValidInput(input, 'd', map, out string funcName, out int argumentsCount, out string expression));
+                    Console.WriteLine(Validator.IsValidInput(input, 'd', map, out string funcName, out string[]? arguments, out string expression));
                     
-                    if (!Validator.IsValidInput(input, 'd', map, out funcName, out argumentsCount, out expression))
+                    if (!Validator.IsValidInput(input, 'd', map, out funcName, out arguments, out expression))
                         break;
                     
-                    // Handle notation
-                    Tree newTree = new Tree();
-
                     // TODO - Remove debug
                     Console.WriteLine(expression);
                     
-                    // Build the tree
+                    Tree newTree = new Tree();
                     newTree.BuildTree(expression);
                     newTree.PrintTree();
-
-                    // Save into the hashmap
-                    map.Add(funcName, argumentsCount, newTree);
+                    
+                    map.Add(funcName, arguments, newTree);
                     
                     break;
                 case "SOLVE":
-                    Console.WriteLine(Validator.IsValidInput(input, 's', map, out funcName, out argumentsCount, out expression));
+                    Console.WriteLine(Validator.IsValidInput(input, 's', map, out funcName, out arguments, out expression));
+                    if (!Validator.IsValidInput(input, 's', map, out funcName, out arguments, out expression))
+                        break;
                     
                     break;
                 case "ALL":

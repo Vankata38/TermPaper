@@ -6,13 +6,13 @@ namespace TermPaper;
 public class Validator
 {
     // TODO: Make this function take func format, so we can validate d, s, f separately
-    public static bool IsValidInput(string input, char mode, Hashmap map, out string functionName, out int argumentsCount, out string expression)
+    public static bool IsValidInput(string input, char mode, Hashmap map, out string functionName, out string[]? argumentsArray, out string expression)
     {
         // Get the name, arguments and definition of the function
         functionName = Helper.Extract(' ', '(', input);
         string args = Helper.Extract('(', ':', input);
         expression = Helper.Extract('"', '"', input);
-        argumentsCount = 0;
+        argumentsArray = null;
         
         if ((functionName == "" || args == "") || (mode == 'd' && expression == ""))
             return false;
@@ -37,8 +37,7 @@ public class Validator
             return false;
         
         // Extract the arguments of the function and error if 0
-        string[] arguments = GetArguments(args, out bool valid, mode);
-        argumentsCount = arguments.Length;
+        argumentsArray = GetArguments(args, out bool valid, mode);
         if (!valid)
             return false;
 
@@ -46,8 +45,9 @@ public class Validator
         if (!IsValidBrackets(input, mode))
             return false;
         
+        // TODO Fix number of operators and operands crashing the program 
         // Validate the expression if in definition mode
-        if (!IsValidExpression(expression, arguments))
+        if (!IsValidExpression(expression, argumentsArray))
             return false;
 
         if (!GetFunctions(expression, out string[] funcNames, out string[] funcArgs, out valid))
@@ -60,16 +60,15 @@ public class Validator
         if (!valid)
             return false;
 
-        // TODO Replace with z, x, y... do the convert then replace back with func trees
         for (int i = 0; i < funcNames.Length; i++)
         {
-            var argsCount = GetArguments(funcArgs![i], out valid, 'd').Length;
+            int argsCount = GetArguments(funcArgs[i], out valid, 'd').Length;
             if (!map.Contains(funcNames[i]) || (argsCount != map.GetArgumentsCount(funcNames[i])))
                 return false;
             
             string toReplace = Helper.CreateReplacementFunc(funcNames[i], funcArgs[i]);
-            
             char replacement = (char)('z' - i);
+            
             expression = Helper.Replace(expression, toReplace, replacement.ToString());
         }
 
@@ -104,6 +103,9 @@ public class Validator
                 
                 // If we have a num outside of a variable, it's invalid
                 if (!inVariable && Helper.IsNumber(c) && mode != 's')
+                    valid = false;
+                
+                if (mode == 's' && c != '0' && c != '1')
                     valid = false;
                 
                 inVariable = true;
@@ -200,17 +202,16 @@ public class Validator
                     
                     if (!Helper.Contains(variables, variable))
                         return false;
-                    
+
                     variable = "";
                     inVariable = false;
                 }
-            }
-            else
+            } else
             {
                 return false;
             }
         }
-
+        
         return true;
     }
 
@@ -305,7 +306,7 @@ public class Validator
         return true;
     }
 
-    public static bool IsPostfix(string expression)
+    private static bool IsPostfix(string expression)
     {
         // We need to handle funcX(a, b) having a ' ' after the "а,"
         for (int i = 0; i < expression.Length - 1; i++)

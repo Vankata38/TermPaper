@@ -9,22 +9,19 @@ public static class Helper
         
         for (int i = 0; i < input.Length; i++)
         {
-            if (input[i] == start)
+            if (input[i] != start) continue;
+            for (int j = i + 1; j < input.Length; j++)
             {
-                for (int j = i + 1; j < input.Length; j++)
-                {
-                    if (input[j] == end)
-                        return result;
-                    else
-                        result += input[j];
-                }
+                if (input[j] == end)
+                    return result;
+                result += input[j];
             }
         }
 
         return result;
     }
 
-    public static int IndexOf(string input, string toFind)
+    private static int IndexOf(string input, string toFind)
     {
         for (int i = 0; i < input.Length; i++)
         {
@@ -184,7 +181,7 @@ public static class Helper
         return c == '&' || c == '|' || c == '!' || c == '(' || c == ')';
     }
     
-    private static int Precedense(char c)
+    private static int Precedence(char c)
     {
         switch (c)
         {
@@ -211,7 +208,7 @@ public static class Helper
                 postfix += c;
             } else if (c == '&' || c == '|')
             {
-                while (stack.Count() > 0 && Precedense(stack.Peek().Value) >= Precedense(c))
+                while (stack.Count() > 0 && Precedence(stack.Peek().Value) >= Precedence(c))
                 {
                     postfix += stack.Pop().Value;
                 }

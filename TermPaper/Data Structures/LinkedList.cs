@@ -3,22 +3,15 @@ namespace TermPaper.Data_Structures;
 public class LinkedList
 {
     private Node? _head;
-    private int _count;
 
     public LinkedList()
     {
         _head = null;
-        _count = 0;
     }
 
-    public int Count
+    public void AddFirst(string funcName, string[]? arguments, Tree value)
     {
-        get { return _count; }
-    }
-
-    public void AddFirst(string funcName, int argumentsCount, Tree value)
-    {
-        Node newNode = new Node(funcName, argumentsCount, value);
+        Node newNode = new Node(funcName, arguments, value);
 
         if (_head == null)
         {
@@ -29,13 +22,11 @@ public class LinkedList
             newNode.Next = _head;
             _head = newNode;
         }
-
-        _count++;
     }
 
-    public void AddLast(string funcName, int argumentsCount, Tree value)
+    public void AddLast(string funcName, string[]? arguments, Tree value)
     {
-        Node newNode = new Node(funcName, argumentsCount, value);
+        Node newNode = new Node(funcName, arguments, value);
 
         if (_head == null)
         {
@@ -52,8 +43,6 @@ public class LinkedList
 
             current.Next = newNode;
         }
-
-        _count++;
     }
 
     public bool Contains(string funcName)
@@ -97,7 +86,8 @@ public class LinkedList
         {
             if (current.Key == funcName)
             {
-                return current.ArgumentCount ?? 0;
+                if (current.Arguments != null) 
+                    return current.Arguments.Length;
             }
             
             current = current.Next;
@@ -120,14 +110,14 @@ public class LinkedList
     public class Node
     {
         public readonly string? Key;
-        public int? ArgumentCount;
-        public Tree? Value;
+        public readonly string[]? Arguments;
+        public readonly Tree? Value;
         public Node? Next;
 
-        public Node(string? funcName, int? count, Tree? value)
+        public Node(string? funcName, string[]? arguments, Tree? value)
         {
             Key = funcName;
-            ArgumentCount = count;
+            Arguments = arguments;
             Value = value;
             Next = null;
         }
