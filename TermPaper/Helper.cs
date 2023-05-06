@@ -236,4 +236,20 @@ public static class Helper
         
         return postfix;
     }
+    
+    public static string CreateReplacementFunc(string funcName ,string funcArgs)
+    {
+        var args = "";
+        for (int i = 0; i < funcArgs.Length; i++)
+        {
+            if (funcArgs[i] == ',')
+            {
+                args += ", ";
+                continue;
+            } 
+            args += funcArgs[i];
+        }
+        
+        return funcName + "(" + args + ")";
+    }
 }

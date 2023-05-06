@@ -60,16 +60,28 @@ public class Validator
         if (!valid)
             return false;
 
+        // TODO Replace with z, x, y... do the convert then replace back with func trees
         for (int i = 0; i < funcNames.Length; i++)
         {
             var argsCount = GetArguments(funcArgs![i], out valid, 'd').Length;
             if (!map.Contains(funcNames[i]) || (argsCount != map.GetArgumentsCount(funcNames[i])))
                 return false;
-            expression = ReplaceFunctions(expression, funcNames[i], funcArgs[i], map);
+            
+            string toReplace = Helper.CreateReplacementFunc(funcNames[i], funcArgs[i]);
+            
+            char replacement = (char)('z' - i);
+            expression = Helper.Replace(expression, toReplace, replacement.ToString());
         }
 
-        // TODO Fix the postfix conversion for func5 in the right format
         expression = Helper.ConvertToPostfix(expression);
+
+        for (int i = 0; i < funcNames.Length; i++)
+        {
+            char toReplace = (char)('z' - i);
+            string replacement = map.TreeToPostfix(funcNames[i]);
+            
+            expression = Helper.Replace(expression, toReplace.ToString(), replacement);
+        }
         
         return true;
     }
@@ -292,27 +304,7 @@ public class Validator
         valid = true;
         return true;
     }
-    
-    private static string ReplaceFunctions(string expression, string funcNames, string funcArgs, Hashmap map)
-    {
-        var args = "";
-        for (int i = 0; i < funcArgs.Length; i++)
-        {
-            if (funcArgs[i] == ',')
-            {
-                args += ", ";
-                continue;
-            } 
-            args += funcArgs[i];
-        }
-        
-        var toReplace = funcNames + "(" + args + ")";
-        var replacement = map.TreeToPostfix(funcNames);
-        expression = Helper.Replace(expression, toReplace, replacement);
 
-        return expression;
-    }
-    
     public static bool IsPostfix(string expression)
     {
         // We need to handle funcX(a, b) having a ' ' after the "а,"

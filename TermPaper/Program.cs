@@ -55,7 +55,6 @@ static class Program
 
                     // Save into the hashmap
                     map.Add(funcName, argumentsCount, newTree);
-                    map.Get("func1")?.PrintTree();
                     
                     break;
                 case "SOLVE":
