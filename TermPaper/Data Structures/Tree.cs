@@ -16,15 +16,37 @@ public class Tree
         }
     }
 
-    private TreeNode? _root;
+    private TreeNode? Root;
     public Tree()
     {
-        _root = null;
+        Root = null;
     }
 
+    public Tree CopyTree()
+    {
+        var newTree = new Tree();
+        newTree.Root = CopyNode(Root);
+        return newTree;
+    }
+
+    private TreeNode CopyNode(TreeNode? node)
+    {
+        if (node == null)
+        {
+            return null;
+        }
+        else
+        {
+            var newNode = new TreeNode(node.Value);
+            newNode.Left = CopyNode(node.Left);
+            newNode.Right = CopyNode(node.Right);
+            return newNode;
+        }
+    }
+    
     public void PrintTree()
     {
-        Print2DUtil(_root, 0);
+        Print2DUtil(Root, 0);
     }
     
     private void Print2DUtil(TreeNode? root, int space)
@@ -73,12 +95,12 @@ public class Tree
             }
         }
         
-        _root = stack.Pop();
+        Root = stack.Pop();
     }
     
     public string TreeToPostfix()
     {
-        return TreeToPostfix(_root);
+        return TreeToPostfix(Root);
     }
     
     private static string TreeToPostfix(TreeNode? root)
@@ -99,5 +121,26 @@ public class Tree
                 return left + right + current;
             
         }
+    }
+
+    public string ReplaceValuesAndReturnPostfix(string[] toReplace, string[] replacement)
+    {
+        // We look at the original tree and replace the variable
+        // Then we move the changed elements to the working copy
+        string workingCopyPostfix = TreeToPostfix();
+        string originalPostfix = workingCopyPostfix;
+
+        workingCopyPostfix = Helper.Replace(workingCopyPostfix, toReplace[0], replacement[0]);
+        for (int i = 1; i < toReplace.Length; i++)
+        {
+            // Go though the original copy and find where u need to replace
+            for (int ch = 0; ch < originalPostfix.Length; ch++)
+            {
+                if (originalPostfix[ch] == toReplace[i][0])
+                    workingCopyPostfix = Helper.ReplaceCharAt(workingCopyPostfix, replacement[i][0], ch);
+            }
+        }
+
+        return workingCopyPostfix;
     }
 }

@@ -78,6 +78,24 @@ public class LinkedList
         return null;
     }
 
+    public string[]? GetArguments(string funcName)
+    {
+        Node? current = _head;
+
+        while (current != null)
+        {
+            if (current.Key == funcName)
+            {
+                if (current.Arguments != null) 
+                    return current.Arguments;
+            }
+            
+            current = current.Next;
+        }
+
+        return null;
+    }
+    
     public int GetArgumentsCount(string funcName)
     {
         Node? current = _head;

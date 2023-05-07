@@ -74,7 +74,7 @@ public class Validator
             
             string toReplace = Helper.CreateReplacementFunc(funcNames[i], funcArgs[i]);
             char replacement = (char)('z' - i);
-            
+
             expression = Helper.Replace(expression, toReplace, replacement.ToString());
         }
 
@@ -83,9 +83,12 @@ public class Validator
         for (int i = 0; i < funcNames.Length; i++)
         {
             char toReplace = (char)('z' - i);
-            string replacement = map.TreeToPostfix(funcNames[i]);
+            string[] argsFromCall = Helper.Split(funcArgs[i], ',');
+            string[] argsFromOriginalTree = map.GetArguments(funcNames[i])!;
+            Tree originalFunctionTree = map.Get(funcNames[i])!;
             
-            expression = Helper.Replace(expression, toReplace.ToString(), replacement);
+            string postfix = originalFunctionTree.ReplaceValuesAndReturnPostfix(argsFromOriginalTree, argsFromCall);
+            expression = Helper.Replace(expression, toReplace.ToString(), postfix);
         }
         
         return true;

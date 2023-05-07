@@ -15,10 +15,10 @@ public class Hashmap
     private readonly int _size;
     private readonly Entry[] _entries;
     
-    public Hashmap(int size = 17)
+    public Hashmap(int size = 23)
     {
-        if (size < 17)
-            size = 17;
+        if (size < 23)
+            size = 23;
         
         _size = size;
         _entries = new Entry[size];
@@ -54,6 +54,17 @@ public class Hashmap
         
         LinkedList list = _entries[hash].Value;
         return list.Contains(funcName);
+    }
+
+    public string[]? GetArguments(string funcName)
+    {
+        var index = Hash(funcName);
+        var current = _entries[index];
+        
+        var list = current.Value;
+        string[]? arguments = list.GetArguments(funcName);
+
+        return arguments;
     }
     
     public int GetArgumentsCount(string funcName)

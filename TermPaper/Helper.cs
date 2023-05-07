@@ -143,6 +143,20 @@ public static class Helper
         return result;
     }
 
+    public static string ReplaceCharAt(string input, char c, int index)
+    {
+        string result = "";
+        for (int i = 0; i < input.Length; i++)
+        {
+            if (i == index)
+                result += c;
+            else
+                result += input[i];
+        }
+
+        return result;
+    }
+    
     public static bool Contains(string[] input, string s)
     {
         foreach (string str in input)
