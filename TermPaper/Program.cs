@@ -10,7 +10,7 @@ static class Program
         "DEFINE func3(a, b, c, d): \"a & (b | c) & !d\"",
         "DEFINE func5(a, b, c, d): \"func1(a, b) & func2(a, b, c) & func3(a, b, c, d)\""
     };
-    
+
     static void Main(string[] args)
     {
         Hashmap map = new Hashmap();
@@ -39,26 +39,12 @@ static class Program
                 case "DEFINE":
                     
                     // TODO - Remove debug check validity of function name
-                    Console.WriteLine(Validator.IsValidInput(input, 'd', map, out string funcName, out string[]? arguments, out string expression));
-                    
-                    if (!Validator.IsValidInput(input, 'd', map, out funcName, out arguments, out expression))
-                        break;
-                    
-                    // TODO - Remove debug
-                    Console.WriteLine(expression);
-                    
-                    Tree newTree = new Tree();
-                    newTree.BuildTree(expression);
-                    newTree.PrintTree();
-                    
-                    map.Add(funcName, arguments, newTree);
+                    FunctionHandler.Define(input, map);
                     
                     break;
                 case "SOLVE":
-                    Console.WriteLine(Validator.IsValidInput(input, 's', map, out funcName, out arguments, out expression));
-                    if (!Validator.IsValidInput(input, 's', map, out funcName, out arguments, out expression))
-                        break;
-                    
+                    FunctionHandler.Solve(input, map);
+
                     break;
                 case "ALL":
                     Console.WriteLine("ALL");

@@ -26,6 +26,12 @@ public class Validator
         args = Helper.RemoveChar(args, ' ');
         expression += " ";
 
+        if (mode == 'd' && map.Contains(functionName))
+            return false;
+
+        if (mode == 's' && !map.Contains(functionName))
+            return false;
+        
         // TODO: Remove debug statements
         Console.WriteLine("\nDEBUG: ");
         Console.WriteLine($"Input: {input}");
