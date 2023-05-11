@@ -263,4 +263,19 @@ public static class Helper
         
         return funcName + "(" + args + ")";
     }
+
+    public static bool ParseCharToBool(char input)
+    {
+        if (input == '1')
+            return true;
+        else if (input == '0')
+            return false;
+        else
+            throw new Exception("Invalid char");
+    }
+    
+    public static char ParseBoolToChar(bool input)
+    {
+        return input ? '1' : '0';
+    }
 }

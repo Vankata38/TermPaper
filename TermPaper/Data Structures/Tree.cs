@@ -125,15 +125,12 @@ public class Tree
 
     public string ReplaceValuesAndReturnPostfix(string[] toReplace, string[] replacement)
     {
-        // We look at the original tree and replace the variable
-        // Then we move the changed elements to the working copy
         string workingCopyPostfix = TreeToPostfix();
         string originalPostfix = workingCopyPostfix;
 
         workingCopyPostfix = Helper.Replace(workingCopyPostfix, toReplace[0], replacement[0]);
         for (int i = 1; i < toReplace.Length; i++)
         {
-            // Go though the original copy and find where u need to replace
             for (int ch = 0; ch < originalPostfix.Length; ch++)
             {
                 if (originalPostfix[ch] == toReplace[i][0])
@@ -142,5 +139,118 @@ public class Tree
         }
 
         return workingCopyPostfix;
+    }
+
+    public bool Solve(string[] variables, string[] values)
+    {
+        bool result = false;
+        Tree copy = CopyTree();
+        
+        if (Root != null) 
+            ReplaceValues(copy.Root!, variables, values);
+
+        result = SolveTree(copy.Root!, variables, values);
+        return result;
+    }
+
+    private bool SolveTree(TreeNode node, string[] variables, string[] values)
+    {
+        bool result = false;
+
+        Stack stack = new Stack();
+        string expression = TreeToPostfix(node);
+
+        bool reverseNext = false;
+        for (int i = 0; i < expression.Length; i++)
+        {
+            if (stack.isEmpty())
+            {
+                stack.Push(new TreeNode(expression[i]));
+                continue;
+            }
+            else if (reverseNext) {
+                reverseNext = false;
+                var a = stack.Pop().Value;
+                stack.Pop();
+                
+                char aReverseChar;
+                if (a == '0')
+                    aReverseChar = '1';
+                else if (a == '1')
+                    aReverseChar = '0';
+                else
+                    throw new Exception("Failed to parse char to bool");
+                
+                stack.Push(new TreeNode(aReverseChar));
+            }
+            else if (stack.Peek().Value == '&')
+            {
+                stack.Pop();
+                var a = stack.Pop().Value;
+                var b = stack.Pop().Value;
+
+                bool value = Helper.ParseCharToBool(a) && Helper.ParseCharToBool(b);
+                stack.Push(new TreeNode(Helper.ParseBoolToChar(value)));
+            } else if (stack.Peek().Value == '|')
+            {
+                stack.Pop();
+                var a = stack.Pop().Value;
+                var b = stack.Pop().Value;
+
+                bool value = Helper.ParseCharToBool(a) || Helper.ParseCharToBool(b);
+                stack.Push(new TreeNode(Helper.ParseBoolToChar(value)));
+            } else if (stack.Peek().Value == '!')
+            {
+                reverseNext = true;
+            }
+            
+            stack.Push(new TreeNode(expression[i]));
+        }
+
+        if (stack.Count() == 3)
+        {
+            if (stack.Peek().Value == '&')
+            {
+                stack.Pop();
+                var a = stack.Pop().Value;
+                var b = stack.Pop().Value;
+
+                result = Helper.ParseCharToBool(a) && Helper.ParseCharToBool(b);
+            } else if (stack.Peek().Value == '|')
+            {
+                stack.Pop();
+                var a = stack.Pop().Value;
+                var b = stack.Pop().Value;
+
+                result = Helper.ParseCharToBool(a) || Helper.ParseCharToBool(b);
+            }
+        }
+        else if (stack.Count() == 1)
+        {
+            result = Helper.ParseCharToBool(stack.Pop().Value);
+        }
+        else
+        {
+            throw new Exception("Failed to solve tree");
+        }
+        
+        return result;
+    }
+
+    private void ReplaceValues(TreeNode treeNode, string[] variables, string[] values)
+    {
+        if (treeNode == null)
+            return;
+        
+        for (int i = 0; i < variables.Length; i++)
+        {
+            if (treeNode.Value == variables[i][0])
+            {
+                treeNode.Value = values[i][0];
+            }
+        }
+
+        ReplaceValues(treeNode.Left, variables, values);
+        ReplaceValues(treeNode.Right, variables, values);
     }
 }

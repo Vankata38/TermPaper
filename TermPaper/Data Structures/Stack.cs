@@ -38,6 +38,10 @@ public class Stack
         return _top.Value;
     }
     
+    public bool isEmpty()
+    {
+        return _top == null;
+    }
     public int Count()
     {
         int count = 0;
