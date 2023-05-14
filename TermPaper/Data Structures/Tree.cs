@@ -117,9 +117,8 @@ public class Tree
 
             if (root.Value == '!')
                 return current + right;
-            else
-                return left + right + current;
             
+            return left + right + current;
         }
     }
 

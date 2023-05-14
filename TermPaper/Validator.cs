@@ -6,7 +6,7 @@ namespace TermPaper;
 public class Validator
 {
     // TODO: Make this function take func format, so we can validate d, s, f separately
-    public static bool IsValidInput(string input, char mode, Hashmap map, out string functionName, out string[]? argumentsArray, out string expression)
+    public static bool IsValidInput(string input, char mode, Hashmap map, out string functionName, out string[]? argumentsArray, out string? expression)
     {
         // Get the name, arguments and definition of the function
         functionName = Helper.Extract(' ', '(', input);
@@ -14,10 +14,10 @@ public class Validator
         expression = Helper.Extract('"', '"', input);
         argumentsArray = null;
         
-        if ((functionName == "" || args == "") || (mode == 'd' && expression == ""))
+        if ((functionName == "") || (mode != 'a' && args == "") || (mode == 'd' && expression == ""))
             return false;
         
-        if (mode != 'f')
+        if (mode != 'f' && mode != 'a')
         {
             if (args[args.Length-1] != ')') 
                 return false;
@@ -41,11 +41,15 @@ public class Validator
 
         if (!IsValidFunctionName(functionName))
             return false;
-        
+
+        bool valid;
         // Extract the arguments of the function and error if 0
-        argumentsArray = GetArguments(args, out bool valid, mode);
-        if (!valid)
-            return false;
+        if (mode != 'a' && mode != 'f')
+        {
+            argumentsArray = GetArguments(args, out valid, mode);
+            if (!valid)
+                return false;
+        }
 
         // Validate the brackets and make sure we only have 2 (' " ') parentheses
         if (!IsValidBrackets(input, mode))

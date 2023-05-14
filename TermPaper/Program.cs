@@ -30,7 +30,7 @@ static class Program
                 input = Console.ReadLine()!;
             }
 
-            if (input[0] == ' ')
+            if (input != "" && input[0] == ' ')
                 input = Helper.SubString(Helper.FindFirstChar(input), input); 
             string command = Helper.Split(input, ' ', 1)[0];
 
@@ -47,7 +47,8 @@ static class Program
 
                     break;
                 case "ALL":
-                    Console.WriteLine("ALL");
+                    FunctionHandler.All(input, map);
+                    
                     break;
                 case "FIND":
                     Console.WriteLine("FIND");

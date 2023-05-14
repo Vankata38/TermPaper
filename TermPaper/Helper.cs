@@ -274,6 +274,26 @@ public static class Helper
             throw new Exception("Invalid char");
     }
     
+    public static string[] DecimalToBinary(int number, int numberSize) {
+        string[] binaryNum = new string[numberSize];
+        int index = numberSize - 1;
+        
+        // fill 1s
+        while (number > 0) {
+            binaryNum[index] = (number % 2 == 1) ? "1" : "0";
+            number /= 2;
+            index--;
+        }
+        
+        // fill 0s
+        while (index >= 0) {
+            binaryNum[index] = "0";
+            index--;
+        }
+
+        return binaryNum;
+    }
+    
     public static char ParseBoolToChar(bool input)
     {
         return input ? '1' : '0';
