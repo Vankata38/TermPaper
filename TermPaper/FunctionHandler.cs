@@ -53,10 +53,10 @@ public class FunctionHandler
             {
                 if (j == 0)
                 {
-                    inputs[i] += $"{inputI[j]} ";
+                    inputs[i] += $"{inputI[j]}";
                     continue;
                 }
-                inputs[i] += $", {inputI[j]}";
+                inputs[i] += $" , {inputI[j]}";
             }
             
             bool answer = funcTree.Solve(variables, inputI);
