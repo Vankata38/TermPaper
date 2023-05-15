@@ -71,7 +71,7 @@ public class Tree
         {
             if (Helper.IsLetter(c))
             {
-                if (stack.Count() > 0 && stack.Peek().Value == '!')
+                if (stack.Count() > 0 && stack.Peek().Value == '!' && stack.Peek().Right == null)
                 {
                     var notNode = new TreeNode(stack.Pop().Value);
                     notNode.Right = new TreeNode(c);
