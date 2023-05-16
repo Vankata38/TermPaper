@@ -105,7 +105,6 @@ public class Validator
 
             expression = _helper.Replace(expression, toReplace, replacement.ToString());
         }
-
         expression = _helper.ConvertToPostfix(expression);
 
         for (int i = 0; i < funcNames.Length; i++)

@@ -3,7 +3,7 @@ namespace TermPaper.Handlers;
 
 public class FileHandler
 {
-    private const int DEFAULTSIZE = 23;
+    private const int DefaultSize = 23;
     private const string Filename = "hashmap.txt";
     private readonly Helper _helper = new Helper();
     
@@ -54,7 +54,7 @@ public class FileHandler
         if ((line = reader.ReadLine()!) != null)
         {
             int mapSize = _helper.ParseInt(line);
-            if (mapSize != DEFAULTSIZE && mapSize > 0)
+            if (mapSize != DefaultSize && mapSize > 0)
                 map = new Hashmap(mapSize);
         }
             
