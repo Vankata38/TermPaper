@@ -294,8 +294,20 @@ public  class Helper
         return binaryNum;
     }
     
-    public  char ParseBoolToChar(bool input)
+    public char ParseBoolToChar(bool input)
     {
         return input ? '1' : '0';
     }
+
+    public int ParseInt(string input)
+    {
+        int result = 0;
+        foreach (char ch in input)
+        {
+            if (IsNumber(ch))
+                result = result * 10 + (ch - '0');
+        }
+
+        return result;
+    } 
 }
