@@ -82,8 +82,11 @@ public class Validator
         
         // TODO Fix number of operators and operands crashing the program
         // Validate the expression if in definition mode
-        if (!IsValidExpression(expression, argumentsArray!))
-            return false;
+        if (!IsPostfix(expression))
+        {
+            if (!IsValidExpression(expression, argumentsArray!))
+                return false;
+        }
 
         if (!GetFunctions(expression, out string[] funcNames, out string[] funcArgs, out valid))
             if (!IsPostfix(expression))
