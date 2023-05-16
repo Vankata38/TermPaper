@@ -59,6 +59,11 @@ static class Program
                     Console.WriteLine("FIND");
 
                     break;
+                case "DELETE":
+                    map = fileHandler.DeleteFile();
+                    Console.WriteLine("File deleted!");
+
+                    break;
                 case "EXIT":
                     fileHandler.Save(map);
                     Console.WriteLine("Have a nice day!");
