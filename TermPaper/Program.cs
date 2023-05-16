@@ -1,4 +1,6 @@
 ﻿using TermPaper.Data_Structures;
+using TermPaper.Handlers;
+
 namespace TermPaper;
 
 static class Program
@@ -16,7 +18,7 @@ static class Program
         Helper helper = new Helper();
         FileHandler fileHandler = new FileHandler();
         FunctionHandler functionHandler = new FunctionHandler();
-        Hashmap map = new Hashmap();
+        Hashmap map = fileHandler.LoadFromFile();
         int testIndex = 0;
 
         while (true)

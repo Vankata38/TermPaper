@@ -1,6 +1,5 @@
 using TermPaper.Data_Structures;
-
-namespace TermPaper;
+namespace TermPaper.Handlers;
 
 public class FunctionHandler
 {

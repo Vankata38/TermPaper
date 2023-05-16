@@ -35,8 +35,8 @@ public class Validator
         Console.WriteLine("\nDEBUG: ");
         Console.WriteLine($"Input: {input}");
         Console.WriteLine($"Name: {functionName}");
-        Console.WriteLine($"Args: {args}");
-        Console.WriteLine($"Def: {expression}");
+        Console.WriteLine($"Arguments: {args}");
+        Console.WriteLine($"Expression: {expression} \n");
 
         if (!IsValidFunctionName(functionName))
             return false;

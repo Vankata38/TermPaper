@@ -1,6 +1,5 @@
 using TermPaper.Data_Structures;
-
-namespace TermPaper;
+namespace TermPaper.Handlers;
 
 public class FileHandler
 {
@@ -10,7 +9,8 @@ public class FileHandler
     public void Save(Hashmap map)
     {
         using FileStream stream = new FileStream(Filename, FileMode.Create);
-        using BinaryWriter writer = new BinaryWriter(stream);
+        // using BinaryWriter writer = new BinaryWriter(stream);
+        using StreamWriter writer = new StreamWriter(stream);
         for (int i = 0; i < map.Size(); i++)
         {
             var list = map[i];
@@ -41,10 +41,14 @@ public class FileHandler
         }
     }
 
-    public void LoadFromFile(out Hashmap outMap)
+    public Hashmap LoadFromFile()
     {
         Hashmap map = new Hashmap();
 
+        
+        if (!File.Exists(Filename))
+            return map;
+        
         using (StreamReader reader = new StreamReader(Filename))
         {
             string line;
@@ -66,6 +70,6 @@ public class FileHandler
             }
         }
 
-        outMap = map;
+        return map;
     }
 }
