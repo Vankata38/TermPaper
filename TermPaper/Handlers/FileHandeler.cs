@@ -6,6 +6,7 @@ public class FileHandler
     private const int DefaultSize = 23;
     private const string Filename = "hashmap.txt";
     private readonly Helper _helper = new Helper();
+    private readonly Validator _validator = new Validator();
     
     public void Save(Hashmap map)
     {
@@ -15,30 +16,28 @@ public class FileHandler
         for (int i = 0; i < map.Size(); i++)
         {
             var list = map[i];
-            for (int j = 0; j < list.GetCount(); j++)
+            var node = list.GetHead();
+            while (node != null)
             {
-                var node = list.GetHead();
-                while (node != null)
+                var tree = node.Value;
+                
+                writer.Write(node.Key + " ");
+                for (int k = 0; k < node.Arguments!.Length; k++)
                 {
-                    var tree = node.Value;
-                    
-                    writer.Write(node.Key + " ");
-                    for (int k = 0; k < node.Arguments!.Length; k++)
+                    if (k == 0)
                     {
-                        if (k == 0)
-                        {
-                            writer.Write($"{node.Arguments[k]}");
-                            continue;
-                        }
-                        writer.Write("," + node.Arguments[k]);
+                        writer.Write($"{node.Arguments[k]}");
+                        continue;
                     }
-                    writer.Write(" ");
-                    writer.Write(tree!.TreeToPostfix());
-                    writer.Write("\n");
-                    
-                    node = node.Next;
+                    writer.Write("," + node.Arguments[k]);
                 }
+                writer.Write(" ");
+                writer.Write(tree!.TreeToPostfix());
+                writer.Write("\n");
+                
+                node = node.Next;
             }
+            
         }
     }
 
@@ -65,10 +64,24 @@ public class FileHandler
             if (lineSplit.Length != 3)
                 continue;
                 
-            string funcName = lineSplit[0];
-            string[] funcArgs = _helper.Split(lineSplit[1], ',');
+            string[] funcAruments = _helper.Split(lineSplit[1], ',');
             string treePostfix = lineSplit[2];
+            string input = " " + lineSplit[0] + "(";
+            for (int i = 0; i < funcAruments.Length; i++)
+            {
+                if (i == 0)
+                {
+                    input += $"{funcAruments[i]}";
+                    continue;
+                }
+                input += ", " + funcAruments[i];
+            }
+            input += "): " + "\"" + treePostfix + "\"";
 
+            bool valid = _validator.IsValidInput(input, 'd', map, out string funcName, out string[]? funcArgs, out string _);
+            if (!valid)
+                continue;
+            
             Tree tree = new Tree();
             tree.BuildTree(treePostfix);
                     
@@ -76,5 +89,12 @@ public class FileHandler
         }
 
         return map;
+    }
+    
+    public Hashmap DeleteFile()
+    {
+        if (File.Exists(Filename))
+            File.Delete(Filename);
+        return new Hashmap();
     }
 }
