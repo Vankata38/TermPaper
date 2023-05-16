@@ -135,7 +135,7 @@ public class Validator
             if (c != ',')
             {
                 // Check if the character is a valid 
-                if (!(_helper.IsLetter(c)) && !(_helper.IsNumber(c)))
+                if (!_helper.IsLetter(c) && !_helper.IsNumber(c))
                     valid = false;
                 
                 // If we have a num outside of a variable, it's invalid
@@ -235,8 +235,11 @@ public class Validator
             if (_helper.IsLetter(c) || _helper.IsNumber(c))
             {
                 if (!inVariable && _helper.IsNumber(c))
+                {
+                    Console.WriteLine("You can't have a number outside of a variable");
                     return false;
-                
+                }
+
                 inVariable = true;
                 variable += c;
             } else if (_helper.IsOperator(c) || c == ' ' || c == ',')
@@ -251,15 +254,19 @@ public class Validator
                         
                         continue;
                     }
-                    
-                    if (!_helper.Contains(variables, variable))
-                        return false;
 
+                    if (!_helper.Contains(variables, variable))
+                    {
+                        Console.WriteLine("You have used a variable that isn't in the arguments list");
+                        return false;
+                    }
+                    
                     variable = "";
                     inVariable = false;
                 }
             } else
             {
+                Console.WriteLine("You have used an invalid character in the expression");
                 return false;
             }
         }
@@ -325,6 +332,7 @@ public class Validator
                 if (_helper.IsNumber(c) && !inName)
                 {
                     valid = false;
+                    Console.WriteLine("You can't have a number outside of a variable");
                     return false;
                 }
 
