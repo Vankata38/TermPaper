@@ -2,6 +2,7 @@ namespace TermPaper.Data_Structures;
 
 public class Tree
 {
+    private readonly Helper _helper = new Helper();
     private const int Count = 10;
 
     public class TreeNode
@@ -16,20 +17,20 @@ public class Tree
         }
     }
 
-    private TreeNode? Root;
+    private TreeNode? _root;
     public Tree()
     {
-        Root = null;
+        _root = null;
     }
 
-    public Tree CopyTree()
+    private Tree CopyTree()
     {
         var newTree = new Tree();
-        newTree.Root = CopyNode(Root);
+        newTree._root = CopyNode(_root);
         return newTree;
     }
 
-    private TreeNode CopyNode(TreeNode? node)
+    private TreeNode? CopyNode(TreeNode? node)
     {
         if (node == null)
         {
@@ -46,7 +47,7 @@ public class Tree
     
     public void PrintTree()
     {
-        Print2DUtil(Root, 0);
+        Print2DUtil(_root, 0);
     }
     
     private void Print2DUtil(TreeNode? root, int space)
@@ -69,11 +70,11 @@ public class Tree
         Stack stack = new Stack();
         foreach (char c in postfix)
         {
-            if (Helper.IsLetter(c))
+            if (_helper.IsLetter(c))
             {
-                if (stack.Count() > 0 && stack.Peek().Value == '!' && stack.Peek().Right == null)
+                if (stack.Count() > 0 && stack.Peek()!.Value == '!' && stack.Peek()!.Right == null)
                 {
-                    var notNode = new TreeNode(stack.Pop().Value);
+                    var notNode = new TreeNode(stack.Pop()!.Value);
                     notNode.Right = new TreeNode(c);
                     stack.Push(notNode);
                     continue;
@@ -95,15 +96,15 @@ public class Tree
             }
         }
         
-        Root = stack.Pop();
+        _root = stack.Pop();
     }
     
     public string TreeToPostfix()
     {
-        return TreeToPostfix(Root);
+        return TreeToPostfix(_root);
     }
     
-    private static string TreeToPostfix(TreeNode? root)
+    private string TreeToPostfix(TreeNode? root)
     {
         if (root == null)
         {
@@ -127,13 +128,13 @@ public class Tree
         string workingCopyPostfix = TreeToPostfix();
         string originalPostfix = workingCopyPostfix;
 
-        workingCopyPostfix = Helper.Replace(workingCopyPostfix, toReplace[0], replacement[0]);
+        workingCopyPostfix = _helper.Replace(workingCopyPostfix, toReplace[0], replacement[0]);
         for (int i = 1; i < toReplace.Length; i++)
         {
             for (int ch = 0; ch < originalPostfix.Length; ch++)
             {
                 if (originalPostfix[ch] == toReplace[i][0])
-                    workingCopyPostfix = Helper.ReplaceCharAt(workingCopyPostfix, replacement[i][0], ch);
+                    workingCopyPostfix = _helper.ReplaceCharAt(workingCopyPostfix, replacement[i][0], ch);
             }
         }
 
@@ -142,17 +143,16 @@ public class Tree
 
     public bool Solve(string[] variables, string[] values)
     {
-        bool result = false;
         Tree copy = CopyTree();
         
-        if (Root != null) 
-            ReplaceValues(copy.Root!, variables, values);
+        if (_root != null) 
+            ReplaceValues(copy._root!, variables, values);
 
-        result = SolveTree(copy.Root!, variables, values);
+        bool result = SolveTree(copy._root!);
         return result;
     }
 
-    private bool SolveTree(TreeNode node, string[] variables, string[] values)
+    private bool SolveTree(TreeNode node)
     {
         bool result = false;
 
@@ -162,14 +162,14 @@ public class Tree
         bool reverseNext = false;
         for (int i = 0; i < expression.Length; i++)
         {
-            if (stack.isEmpty())
+            if (Stack.IsEmpty())
             {
                 stack.Push(new TreeNode(expression[i]));
                 continue;
             }
             else if (reverseNext) {
                 reverseNext = false;
-                var a = stack.Pop().Value;
+                var a = stack.Pop()!.Value;
                 stack.Pop();
                 
                 char aReverseChar;
@@ -182,23 +182,23 @@ public class Tree
                 
                 stack.Push(new TreeNode(aReverseChar));
             }
-            else if (stack.Peek().Value == '&')
+            else if (stack.Peek()!.Value == '&')
             {
                 stack.Pop();
-                var a = stack.Pop().Value;
-                var b = stack.Pop().Value;
+                var a = stack.Pop()!.Value;
+                var b = stack.Pop()!.Value;
 
-                bool value = Helper.ParseCharToBool(a) && Helper.ParseCharToBool(b);
-                stack.Push(new TreeNode(Helper.ParseBoolToChar(value)));
-            } else if (stack.Peek().Value == '|')
+                bool value = _helper.ParseCharToBool(a) && _helper.ParseCharToBool(b);
+                stack.Push(new TreeNode(_helper.ParseBoolToChar(value)));
+            } else if (stack.Peek()!.Value == '|')
             {
                 stack.Pop();
-                var a = stack.Pop().Value;
-                var b = stack.Pop().Value;
+                var a = stack.Pop()!.Value;
+                var b = stack.Pop()!.Value;
 
-                bool value = Helper.ParseCharToBool(a) || Helper.ParseCharToBool(b);
-                stack.Push(new TreeNode(Helper.ParseBoolToChar(value)));
-            } else if (stack.Peek().Value == '!')
+                bool value = _helper.ParseCharToBool(a) || _helper.ParseCharToBool(b);
+                stack.Push(new TreeNode(_helper.ParseBoolToChar(value)));
+            } else if (stack.Peek()!.Value == '!')
             {
                 reverseNext = true;
             }
@@ -208,25 +208,25 @@ public class Tree
 
         if (stack.Count() == 3)
         {
-            if (stack.Peek().Value == '&')
+            if (stack.Peek()!.Value == '&')
             {
                 stack.Pop();
-                var a = stack.Pop().Value;
-                var b = stack.Pop().Value;
+                var a = stack.Pop()!.Value;
+                var b = stack.Pop()!.Value;
 
-                result = Helper.ParseCharToBool(a) && Helper.ParseCharToBool(b);
-            } else if (stack.Peek().Value == '|')
+                result = _helper.ParseCharToBool(a) && _helper.ParseCharToBool(b);
+            } else if (stack.Peek()!.Value == '|')
             {
                 stack.Pop();
-                var a = stack.Pop().Value;
-                var b = stack.Pop().Value;
+                var a = stack.Pop()!.Value;
+                var b = stack.Pop()!.Value;
 
-                result = Helper.ParseCharToBool(a) || Helper.ParseCharToBool(b);
+                result = _helper.ParseCharToBool(a) || _helper.ParseCharToBool(b);
             }
         }
         else if (stack.Count() == 1)
         {
-            result = Helper.ParseCharToBool(stack.Pop().Value);
+            result = _helper.ParseCharToBool(stack.Pop()!.Value);
         }
         else
         {
@@ -236,7 +236,7 @@ public class Tree
         return result;
     }
 
-    private void ReplaceValues(TreeNode treeNode, string[] variables, string[] values)
+    private void ReplaceValues(TreeNode? treeNode, string[] variables, string[] values)
     {
         if (treeNode == null)
             return;

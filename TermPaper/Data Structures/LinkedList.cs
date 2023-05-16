@@ -9,21 +9,6 @@ public class LinkedList
         _head = null;
     }
 
-    public void AddFirst(string funcName, string[]? arguments, Tree value)
-    {
-        Node newNode = new Node(funcName, arguments, value);
-
-        if (_head == null)
-        {
-            _head = newNode;
-        }
-        else
-        {
-            newNode.Next = _head;
-            _head = newNode;
-        }
-    }
-
     public void AddLast(string funcName, string[]? arguments, Tree value)
     {
         Node newNode = new Node(funcName, arguments, value);
@@ -123,6 +108,27 @@ public class LinkedList
 
         var postfix = tree.TreeToPostfix();
         return postfix;
+    }
+    
+    public int GetCount()
+    {
+        int count = 0;
+        Node? current = _head;
+
+        while (current != null)
+        {
+            count++;
+            current = current.Next;
+        }
+
+        return count;
+    }
+
+    public Node? GetHead()
+    {
+        if (_head != null)
+            return _head;
+        return null;
     }
     
     public class Node

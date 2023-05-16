@@ -1,17 +1,16 @@
-using System.Collections;
-using System.Diagnostics;
 using TermPaper.Data_Structures;
 namespace TermPaper;
 
 public class Validator
 {
-    // TODO: Make this function take func format, so we can validate d, s, f separately
-    public static bool IsValidInput(string input, char mode, Hashmap map, out string functionName, out string[]? argumentsArray, out string? expression)
+    private readonly Helper _helper = new Helper();
+    
+    public bool IsValidInput(string input, char mode, Hashmap map, out string functionName, out string[]? argumentsArray, out string? expression)
     {
         // Get the name, arguments and definition of the function
-        functionName = Helper.Extract(' ', '(', input);
-        string args = Helper.Extract('(', ':', input);
-        expression = Helper.Extract('"', '"', input);
+        functionName = _helper.Extract(' ', '(', input);
+        string args = _helper.Extract('(', ':', input);
+        expression = _helper.Extract('"', '"', input);
         argumentsArray = null;
         
         if ((functionName == "") || (mode != 'a' && args == "") || (mode == 'd' && expression == ""))
@@ -23,13 +22,13 @@ public class Validator
                 return false;
             args = args.Remove(args.Length - 1, 1);
         }
-        args = Helper.RemoveChar(args, ' ');
+        args = _helper.RemoveChar(args, ' ');
         expression += " ";
 
         if (mode == 'd' && map.Contains(functionName))
             return false;
 
-        if (mode == 's' && !map.Contains(functionName))
+        if ((mode == 's' || mode == 'a') && !map.Contains(functionName))
             return false;
         
         // TODO: Remove debug statements
@@ -47,7 +46,7 @@ public class Validator
         if (mode != 'a' && mode != 'f')
         {
             argumentsArray = GetArguments(args, out valid, mode);
-            if (!valid)
+            if (!valid || argumentsArray.Length == 0)
                 return false;
         }
 
@@ -57,13 +56,13 @@ public class Validator
         
         // TODO Fix number of operators and operands crashing the program 
         // Validate the expression if in definition mode
-        if (!IsValidExpression(expression, argumentsArray))
+        if (!IsValidExpression(expression, argumentsArray!))
             return false;
 
         if (!GetFunctions(expression, out string[] funcNames, out string[] funcArgs, out valid))
             if (!IsPostfix(expression))
             {
-                expression = Helper.ConvertToPostfix(expression);
+                expression = _helper.ConvertToPostfix(expression);
                 return true;
             }
         
@@ -76,30 +75,30 @@ public class Validator
             if (!map.Contains(funcNames[i]) || (argsCount != map.GetArgumentsCount(funcNames[i])))
                 return false;
             
-            string toReplace = Helper.CreateReplacementFunc(funcNames[i], funcArgs[i]);
+            string toReplace = _helper.CreateReplacementFunc(funcNames[i], funcArgs[i]);
             char replacement = (char)('z' - i);
 
-            expression = Helper.Replace(expression, toReplace, replacement.ToString());
+            expression = _helper.Replace(expression, toReplace, replacement.ToString());
         }
 
-        expression = Helper.ConvertToPostfix(expression);
+        expression = _helper.ConvertToPostfix(expression);
 
         for (int i = 0; i < funcNames.Length; i++)
         {
             char toReplace = (char)('z' - i);
-            string[] argsFromCall = Helper.Split(funcArgs[i], ',');
+            string[] argsFromCall = _helper.Split(funcArgs[i], ',');
             string[] argsFromOriginalTree = map.GetArguments(funcNames[i])!;
             Tree originalFunctionTree = map.Get(funcNames[i])!;
             
             string postfix = originalFunctionTree.ReplaceValuesAndReturnPostfix(argsFromOriginalTree, argsFromCall);
-            expression = Helper.Replace(expression, toReplace.ToString(), postfix);
+            expression = _helper.Replace(expression, toReplace.ToString(), postfix);
         }
         
         return true;
     }
 
     // Returns the arguments of the function
-    private static string[] GetArguments(string args, out bool valid, char mode)
+    private string[] GetArguments(string args, out bool valid, char mode)
     {
         List<string> variables = new List<string>();
         bool inVariable = false;
@@ -111,11 +110,11 @@ public class Validator
             if (c != ',')
             {
                 // Check if the character is a valid 
-                if (!(Helper.IsLetter(c)) && !(Helper.IsNumber(c)))
+                if (!(_helper.IsLetter(c)) && !(_helper.IsNumber(c)))
                     valid = false;
                 
                 // If we have a num outside of a variable, it's invalid
-                if (!inVariable && Helper.IsNumber(c) && mode != 's')
+                if (!inVariable && _helper.IsNumber(c) && mode != 's')
                     valid = false;
                 
                 if (mode == 's' && c != '0' && c != '1')
@@ -143,11 +142,11 @@ public class Validator
         return variables.ToArray();
     }
     
-    private static bool IsValidFunctionName(string name)
+    private bool IsValidFunctionName(string name)
     {
         foreach (char c in name)
         {
-            if (!Helper.IsLetter(c) && !Helper.IsNumber(c))
+            if (!_helper.IsLetter(c) && !_helper.IsNumber(c))
                 return false;
         }
 
@@ -155,7 +154,7 @@ public class Validator
     }
     
     // Checks the number of brackets and if there are flipped brackets (first closing then opening)
-    private static bool IsValidBrackets(string input, char mode)
+    private bool IsValidBrackets(string input, char mode)
     {
         bool inBrackets = false;
         int bracketsCount = 0;
@@ -187,20 +186,20 @@ public class Validator
         return bracketsCount == 0;
     }
     
-    private static bool IsValidExpression(string exp, string[] variables)
+    private bool IsValidExpression(string exp, string[] variables)
     {
         bool inVariable = false;
         string variable = "";
         foreach (char c in exp)
         {
-            if (Helper.IsLetter(c) || Helper.IsNumber(c))
+            if (_helper.IsLetter(c) || _helper.IsNumber(c))
             {
-                if (Helper.IsNumber(c) && !inVariable)
+                if (!inVariable && _helper.IsNumber(c))
                     return false;
                 
                 inVariable = true;
                 variable += c;
-            } else if (Helper.IsOperator(c) || c == ' ' || c == ',')
+            } else if (_helper.IsOperator(c) || c == ' ' || c == ',')
             {
                 if (inVariable)
                 {
@@ -213,7 +212,7 @@ public class Validator
                         continue;
                     }
                     
-                    if (!Helper.Contains(variables, variable))
+                    if (!_helper.Contains(variables, variable))
                         return false;
 
                     variable = "";
@@ -228,14 +227,14 @@ public class Validator
         return true;
     }
 
-    private static bool GetFunctions(string expression, out string[] functionNames, out string[] functionArgs, out bool valid)
+    private bool GetFunctions(string expression, out string[] functionNames, out string[] functionArgs, out bool valid)
     {
         bool weHaveFunction = false;
         bool inText = false;
         int count = 0;
         foreach (char c in expression)
         {
-            if (Helper.IsLetter(c) || Helper.IsNumber(c))
+            if (_helper.IsLetter(c) || _helper.IsNumber(c))
             {
                 if (inText)
                     continue;
@@ -275,7 +274,7 @@ public class Validator
         
         foreach (char c in expression)
         {
-            if (Helper.IsLetter(c) || Helper.IsNumber(c) || c == ',')
+            if (_helper.IsLetter(c) || _helper.IsNumber(c) || c == ',')
             {
                 if (possibleFunction)
                 {
@@ -283,7 +282,7 @@ public class Validator
                     continue;
                 }
                 
-                if (Helper.IsNumber(c) && !inName)
+                if (_helper.IsNumber(c) && !inName)
                 {
                     valid = false;
                     return false;
@@ -319,20 +318,20 @@ public class Validator
         return true;
     }
 
-    private static bool IsPostfix(string expression)
+    private bool IsPostfix(string expression)
     {
         // We need to handle funcX(a, b) having a ' ' after the "а,"
         for (int i = 0; i < expression.Length - 1; i++)
         {
             if (expression[i] == ',')
             {
-                expression = Helper.RemoveAt(expression, i);
-                expression = Helper.RemoveAt(expression, i);
+                expression = _helper.RemoveAt(expression, i);
+                expression = _helper.RemoveAt(expression, i);
             }
         }
         
         // If the expression is postfix, we will have 2 operands before an operator
-        string[] tokens = Helper.Split(expression, ' ');
+        string[] tokens = _helper.Split(expression, ' ');
 
         // Means we have two variables and an operator
         if (tokens[0] != "&" && tokens[0] != "|" &&

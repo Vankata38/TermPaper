@@ -11,8 +11,11 @@ static class Program
         "DEFINE func5(a, b, c, d): \"func1(a, b) & func2(a, b, c) & func3(a, b, c, d)\""
     };
 
-    static void Main(string[] args)
+    static void Main()
     {
+        Helper helper = new Helper();
+        FileHandler fileHandler = new FileHandler();
+        FunctionHandler functionHandler = new FunctionHandler();
         Hashmap map = new Hashmap();
         int testIndex = 0;
 
@@ -31,30 +34,33 @@ static class Program
             }
 
             if (input != "" && input[0] == ' ')
-                input = Helper.SubString(Helper.FindFirstChar(input), input); 
-            string command = Helper.Split(input, ' ', 1)[0];
+                input = helper.SubString(helper.FindFirstChar(input), input); 
+            string command = helper.Split(input, ' ', 1)[0];
 
             switch (command)
             {
                 case "DEFINE":
-                    
-                    // TODO - Remove debug check validity of function name
-                    FunctionHandler.Define(input, map);
-                    
+                    functionHandler.Define(input, map);
+                    fileHandler.Save(map);
+
                     break;
                 case "SOLVE":
-                    FunctionHandler.Solve(input, map);
+                    functionHandler.Solve(input, map);
 
                     break;
                 case "ALL":
-                    FunctionHandler.All(input, map);
-                    
+                    functionHandler.All(input, map);
+
                     break;
                 case "FIND":
+                    fileHandler.Save(map);
                     Console.WriteLine("FIND");
+
                     break;
                 case "EXIT":
+                    fileHandler.Save(map);
                     Console.WriteLine("Have a nice day!");
+                    
                     return;
                 default:
                     Console.WriteLine("Invalid command! Please enter with all capital letters.");

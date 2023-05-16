@@ -4,11 +4,11 @@ public class Stack
 {
     private class Node
     {
-        public Tree.TreeNode Value;
+        public Tree.TreeNode? Value;
         public Node? Next;
     }
 
-    private static Node _top;
+    private static Node? _top;
 
     public Stack()
     {
@@ -21,24 +21,26 @@ public class Stack
         _top = newNode;
     }
 
-    public Tree.TreeNode Pop()
+    public Tree.TreeNode? Pop()
     {
         if (_top == null)
         {
             throw new InvalidOperationException("Stack is empty!");
         }
 
-        Tree.TreeNode value = _top.Value;
+        Tree.TreeNode? value = _top.Value;
         _top = _top.Next;
         return value;
     }
     
-    public Tree.TreeNode Peek()
+    public Tree.TreeNode? Peek()
     {
-        return _top.Value;
+        if (_top != null) 
+            return _top.Value;
+        return null;
     }
     
-    public bool isEmpty()
+    public static bool IsEmpty()
     {
         return _top == null;
     }

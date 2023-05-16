@@ -4,40 +4,51 @@ namespace TermPaper;
 
 public class FunctionHandler
 {
-    public static void Define(string input, Hashmap map)
+    private readonly Helper _helper = new Helper();
+    private readonly Validator _validator = new Validator();
+    public void Define(string input, Hashmap map)
     {
-        Console.WriteLine(Validator.IsValidInput(input, 'd', map, out string funcName, out string[]? arguments, out string expression));
-                    
-        if (!Validator.IsValidInput(input, 'd', map, out funcName, out arguments, out expression))
+        bool valid = _validator.IsValidInput(input, 'd', map, out string funcName, out string[]? arguments,
+            out string? expression);
+        Console.WriteLine($"Command is valid: {valid}");
+        if (!valid)
             return;
-                    
-        Console.WriteLine(expression);
-                    
+
         Tree newTree = new Tree();
-        newTree.BuildTree(expression);
+        newTree.BuildTree(expression!);
         newTree.PrintTree();
                     
         map.Add(funcName, arguments, newTree);
     }
 
-    public static void Solve(string input, Hashmap map)
+    public void Solve(string input, Hashmap map)
     {
-        Console.WriteLine(Validator.IsValidInput(input, 's', map, out string funcName, out string[]? arguments, out string? _));
-        if (!Validator.IsValidInput(input, 's', map, out funcName, out arguments, out string? _))
+        bool valid = _validator.IsValidInput(input, 's', map, out string funcName, out string[]? arguments, out string? _);
+        Console.WriteLine($"Command is valid: {valid}");
+        if (!valid)
             return;
         
         // Get the function from the hashmap
         Tree funcTree = map.Get(funcName)!;
         string[] variables = map.GetArguments(funcName)!;
         bool answer = funcTree.Solve(variables, arguments!);
-        
-        Console.WriteLine($"Answer for {funcName}, with parameters {string.Join(", ", arguments)} is {answer}");
+
+        // Print the answer
+        Console.Write($"Answer for {funcName}, with parameters ");
+        for (int i = 0; i < arguments!.Length; i++)
+        {
+            Console.Write($"{arguments[i]}");
+            if (i != arguments.Length - 1)
+                Console.Write(", ");
+        }
+        Console.Write($" is {answer} \n");
     }
 
-    public static void All(string input, Hashmap map)
+    public void All(string input, Hashmap map)
     {
-        Console.WriteLine(Validator.IsValidInput(input, 'a', map, out string funcName, out string[]? _, out string? _));
-        if (!Validator.IsValidInput(input, 'a', map, out funcName, out _, out string? _))
+        bool valid = _validator.IsValidInput(input, 'a', map, out string funcName, out _, out string? _);
+        Console.WriteLine($"Command is valid: {valid}");
+        if (!valid)
             return;
         
         int funcArgsCount = map.GetArgumentsCount(funcName);
@@ -48,7 +59,7 @@ public class FunctionHandler
         string[] variables = map.GetArguments(funcName)!;
         for (int i = 0; i < inputs.Length; i++)
         {
-            string[] inputI = Helper.DecimalToBinary(i, funcArgsCount);
+            string[] inputI = _helper.DecimalToBinary(i, funcArgsCount);
             for (int j = 0; j < inputI.Length; j++)
             {
                 if (j == 0)
@@ -69,7 +80,7 @@ public class FunctionHandler
         FormattedPrint(funcArgsCount, funcName, variables, inputs, answers);
     }
 
-    private static void FormattedPrint(int funcArgsCount, string funcName, string[] variables, string[] inputs, string[] answers)
+    private void FormattedPrint(int funcArgsCount, string funcName, string[] variables, string[] inputs, string[] answers)
     {
         string printFunc = $"All {funcName} -> ";
         Console.Write(printFunc);

@@ -1,9 +1,9 @@
 using TermPaper.Data_Structures;
 namespace TermPaper;
 
-public static class Helper
+public  class Helper
 {
-    public static string Extract(char start, char end, string input)
+    public string Extract(char start, char end, string input)
     {
         string result = "";
         
@@ -21,7 +21,7 @@ public static class Helper
         return result;
     }
 
-    private static int IndexOf(string input, string toFind)
+    private int IndexOf(string input, string toFind)
     {
         for (int i = 0; i < input.Length; i++)
         {
@@ -45,7 +45,7 @@ public static class Helper
         return -1;
     }
     
-    public static string Replace(string input, string toReplace, string replacement)
+    public string Replace(string input, string toReplace, string replacement)
     {
         string result = "";
         int index = IndexOf(input, toReplace);
@@ -66,7 +66,7 @@ public static class Helper
         return result;
     }
     
-    public static string SubString(int start, string input, int end = -1)
+    public string SubString(int start, string input, int end = -1)
     {
         string result = "";
         
@@ -81,7 +81,7 @@ public static class Helper
         return result;
     }
     
-    public static int FindFirstChar(string input)
+    public int FindFirstChar(string input)
     {
         for (int i = 0; i < input.Length; i++)
         {
@@ -92,7 +92,7 @@ public static class Helper
         return -1;
     }
 
-    public static string RemoveChar(string input, char c)
+    public  string RemoveChar(string input, char c)
     {
         string result = "";
         foreach (char ch in input)
@@ -104,7 +104,7 @@ public static class Helper
         return result;
     }
     
-    public static string[] Split(string input, char separator, int limit = -1)
+    public string[] Split(string input, char separator, int limit = -1)
     {
         int count = 0;
 
@@ -143,7 +143,7 @@ public static class Helper
         return result;
     }
 
-    public static string ReplaceCharAt(string input, char c, int index)
+    public string ReplaceCharAt(string input, char c, int index)
     {
         string result = "";
         for (int i = 0; i < input.Length; i++)
@@ -157,7 +157,7 @@ public static class Helper
         return result;
     }
     
-    public static bool Contains(string[] input, string s)
+    public bool Contains(string[] input, string s)
     {
         foreach (string str in input)
         {
@@ -168,7 +168,7 @@ public static class Helper
         return false;
     }
 
-    public static string RemoveAt(string input, int index)
+    public string RemoveAt(string input, int index)
     {
         string result = "";
         for (int i = 0; i < input.Length; i++)
@@ -180,22 +180,22 @@ public static class Helper
         return result;
     }
     
-    public static bool IsLetter(char c)
+    public bool IsLetter(char c)
     {
         return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z';
     }
     
-    public static bool IsNumber(char c)
+    public bool IsNumber(char c)
     {
         return c >= '0' && c <= '9';
     }
 
-    public static bool IsOperator(char c)
+    public bool IsOperator(char c)
     {
         return c == '&' || c == '|' || c == '!' || c == '(' || c == ')';
     }
     
-    private static int Precedence(char c)
+    private int Precedence(char c)
     {
         switch (c)
         {
@@ -208,7 +208,7 @@ public static class Helper
         }
     }
     
-    public static string ConvertToPostfix(string expression)
+    public string ConvertToPostfix(string expression)
     {
         string postfix = "";
         Stack stack = new Stack();
@@ -217,14 +217,14 @@ public static class Helper
         {
             char c = expression[i];
 
-            if (IsNumber(c) || IsLetter(c) || c == '!')
+            if (IsLetter(c) || c == '!')
             {
                 postfix += c;
             } else if (c == '&' || c == '|')
             {
-                while (stack.Count() > 0 && Precedence(stack.Peek().Value) >= Precedence(c))
+                while (stack.Count() > 0 && Precedence(stack.Peek()!.Value) >= Precedence(c))
                 {
-                    postfix += stack.Pop().Value;
+                    postfix += stack.Pop()!.Value;
                 }
                 stack.Push(new Tree.TreeNode(c));
             } else if (c == '(')
@@ -232,9 +232,9 @@ public static class Helper
                 stack.Push(new Tree.TreeNode(c));
             } else if (c == ')')
             {
-                while (stack.Count() > 0 && stack.Peek().Value != '(')
+                while (stack.Count() > 0 && stack.Peek()!.Value != '(')
                 {
-                    postfix += stack.Pop().Value;
+                    postfix += stack.Pop()!.Value;
                 }
                 stack.Pop();
             }
@@ -242,13 +242,13 @@ public static class Helper
 
         while (stack.Count() > 0)
         {
-            postfix += stack.Pop().Value;
+            postfix += stack.Pop()!.Value;
         }
         
         return postfix;
     }
     
-    public static string CreateReplacementFunc(string funcName ,string funcArgs)
+    public  string CreateReplacementFunc(string funcName ,string funcArgs)
     {
         var args = "";
         for (int i = 0; i < funcArgs.Length; i++)
@@ -264,7 +264,7 @@ public static class Helper
         return funcName + "(" + args + ")";
     }
 
-    public static bool ParseCharToBool(char input)
+    public  bool ParseCharToBool(char input)
     {
         if (input == '1')
             return true;
@@ -274,7 +274,7 @@ public static class Helper
             throw new Exception("Invalid char");
     }
     
-    public static string[] DecimalToBinary(int number, int numberSize) {
+    public  string[] DecimalToBinary(int number, int numberSize) {
         string[] binaryNum = new string[numberSize];
         int index = numberSize - 1;
         
@@ -294,7 +294,7 @@ public static class Helper
         return binaryNum;
     }
     
-    public static char ParseBoolToChar(bool input)
+    public  char ParseBoolToChar(bool input)
     {
         return input ? '1' : '0';
     }

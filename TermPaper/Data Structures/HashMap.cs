@@ -23,7 +23,7 @@ public class Hashmap
         _size = size;
         _entries = new Entry[size];
     }
-
+    
     private int Hash(string key)
     {
         var hash = 0;
@@ -34,11 +34,32 @@ public class Hashmap
 
         return hash % _size;
     }
+    
+    public int Size()
+    {
+        return _size;
+    }
+    
+    public LinkedList this[int index]
+    {
+        get
+        {
+            if (index < 0 || index >= _size)
+                throw new IndexOutOfRangeException();
+            else if (_entries[index] != null)
+                return _entries[index].Value;
+            else 
+                return new LinkedList();
+        } 
+    }
 
     public Tree? Get(string funcName)
     {
         var index = Hash(funcName);
         var current = _entries[index];
+        
+        if (current == null)
+            return null;
         
         var list = current.Value;
         Tree? tree = list.Get(funcName);
@@ -72,6 +93,9 @@ public class Hashmap
         var index = Hash(funcName);
         var current = _entries[index];
         
+        if (current == null)
+            return 0;
+            
         var list = current.Value;
         int argumentsCount = list.GetArgumentsCount(funcName);
 
