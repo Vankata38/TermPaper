@@ -13,24 +13,44 @@ public class Validator
         expression = _helper.Extract('"', '"', input);
         argumentsArray = null;
         
-        if ((functionName == "") || (mode != 'a' && args == "") || (mode == 'd' && expression == ""))
+        if (functionName == "")
+        {
+            Console.WriteLine("No function name provided");
             return false;
+        } else if (mode != 'a' && args == "")
+        {
+            Console.WriteLine("No arguments provided");
+            return false;
+        } else if (mode == 'd' && expression == "")
+        {
+            Console.WriteLine("No expression provided for evaluation");
+            return false;
+        }
         
         if (mode != 'f' && mode != 'a')
         {
-            if (args[args.Length-1] != ')') 
+            if (args[args.Length - 1] != ')')
+            {
+                Console.WriteLine("Invalid arguments provided");
                 return false;
+            }
             args = args.Remove(args.Length - 1, 1);
         }
         args = _helper.RemoveChar(args, ' ');
         expression += " ";
 
         if (mode == 'd' && map.Contains(functionName))
+        {
+            Console.WriteLine("A function with this name already exists");
             return false;
+        }
 
         if ((mode == 's' || mode == 'a') && !map.Contains(functionName))
+        {
+            Console.WriteLine("No function with this name exists");
             return false;
-        
+        }
+
         // TODO: Remove debug statements
         Console.WriteLine("\nDEBUG: ");
         Console.WriteLine($"Input: {input}");
@@ -39,22 +59,28 @@ public class Validator
         Console.WriteLine($"Expression: {expression} \n");
 
         if (!IsValidFunctionName(functionName))
+        {
+            Console.WriteLine("The name of the function name");
             return false;
+        }
 
-        bool valid;
         // Extract the arguments of the function and error if 0
+        bool valid;
         if (mode != 'a' && mode != 'f')
         {
             argumentsArray = GetArguments(args, out valid, mode);
             if (!valid || argumentsArray.Length == 0)
+            {
+                Console.WriteLine("No arguments provided");
                 return false;
+            }
         }
 
         // Validate the brackets and make sure we only have 2 (' " ') parentheses
         if (!IsValidBrackets(input, mode))
             return false;
         
-        // TODO Fix number of operators and operands crashing the program 
+        // TODO Fix number of operators and operands crashing the program
         // Validate the expression if in definition mode
         if (!IsValidExpression(expression, argumentsArray!))
             return false;
@@ -65,7 +91,6 @@ public class Validator
                 expression = _helper.ConvertToPostfix(expression);
                 return true;
             }
-        
         if (!valid)
             return false;
 
@@ -147,9 +172,12 @@ public class Validator
         foreach (char c in name)
         {
             if (!_helper.IsLetter(c) && !_helper.IsNumber(c))
+            {
+                Console.WriteLine("Invalid function name");
                 return false;
+            }
         }
-
+        
         return true;
     }
     
@@ -173,7 +201,10 @@ public class Validator
             else if (c == ')')
             {
                 if (!inBrackets)
+                {
+                    Console.WriteLine("U have a closing bracket \")\" without an opening bracket \"(\"");
                     return false;
+                }
 
                 inBrackets = false;
                 bracketsCount--;
@@ -181,9 +212,18 @@ public class Validator
         }
 
         if (mode == 'd' && parenthesesCount != 0)
+        {
+            Console.WriteLine("You have an invalid number of parentheses, you should only have 2");
             return false;
+        }
+
+        if (bracketsCount != 0)
+        {
+            Console.WriteLine("You haven't closed all the brackets");
+            return false;
+        }
         
-        return bracketsCount == 0;
+        return true;
     }
     
     private bool IsValidExpression(string exp, string[] variables)
